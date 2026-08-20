@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useRouter } from "expo-router";
 import { Button, H1, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
 
 export default function SelectExercise() {
   const [selectedGroup, setSelectedGroup] = useState<MuscleGroup | null>(null);
+  const router = useRouter();
 
   const filteredExercises = selectedGroup
     ? EXERCISES.filter((e) => e.muscleGroup === selectedGroup)
@@ -45,9 +47,12 @@ export default function SelectExercise() {
               {filteredExercises.map((exercise) => (
                 <Button
                   key={exercise.id}
-                  onPress={() => {
-                    // TODO: navigate to exercise tracking screen
-                  }}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/workout/exercise",
+                      params: { exerciseId: exercise.id },
+                    })
+                  }
                   bg="$gray4"
                   borderWidth={1}
                   borderColor="$gray6"
