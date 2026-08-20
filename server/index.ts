@@ -1,10 +1,12 @@
 import express from "express";
+import cors from "cors";
 import crypto from "crypto";
 import { Workout, ExerciseData } from "./types";
 
 const app = express();
 const PORT = 3001;
 
+app.use(cors());
 app.use(express.json());
 
 const workouts: Workout[] = [];
