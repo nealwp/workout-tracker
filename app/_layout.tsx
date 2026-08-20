@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { TamaguiProvider } from "tamagui";
 import { tamaguiConfig } from "../tamagui.config";
+import { WorkoutProvider } from "../context/WorkoutContext";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -10,13 +11,15 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: "#0a0a0a" },
-            headerTintColor: "#ffffff",
-            contentStyle: { backgroundColor: "#0a0a0a" },
-          }}
-        />
+        <WorkoutProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: { backgroundColor: "#0a0a0a" },
+              headerTintColor: "#ffffff",
+              contentStyle: { backgroundColor: "#0a0a0a" },
+            }}
+          />
+        </WorkoutProvider>
       </ThemeProvider>
     </TamaguiProvider>
   );

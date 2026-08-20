@@ -3,6 +3,7 @@ import { TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button, H1, H2, Separator, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES } from "@/data/exercises";
+import { useWorkout } from "../../context/WorkoutContext";
 
 interface Set {
   id: number;
@@ -14,6 +15,7 @@ interface Set {
 export default function ExerciseTracker() {
   const { exerciseId } = useLocalSearchParams<{ exerciseId: string }>();
   const router = useRouter();
+  const { finishExercise } = useWorkout();
 
   const exercise = EXERCISES.find((e) => e.id === exerciseId);
 
@@ -45,10 +47,30 @@ export default function ExerciseTracker() {
     setFailure(false);
   };
 
-  const handleFinishExercise = () => {
-    if (sets.length > 0 && weight && reps) {
-      handleLogSet();
+  const handleFinishExercise = async () => {
+    let finalSets = [...sets];
+
+    if (weight && reps) {
+      const weightNum = parseFloat(weight);
+      const repsNum = parseInt(reps, 10);
+
+      if (!isNaN(weightNum) && !isNaN(repsNum) && weightNum > 0 && repsNum > 0) {
+        finalSets = [
+          ...finalSets,
+          {
+            id: finalSets.length + 1,
+            weight: weightNum,
+            reps: repsNum,
+            failure,
+          },
+        ];
+      }
     }
+
+    if (exerciseId && finalSets.length > 0) {
+      await finishExercise(exerciseId, finalSets);
+    }
+
     router.back();
   };
 

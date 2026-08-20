@@ -1,8 +1,15 @@
 import { useRouter } from "expo-router";
 import { Button, H1, Paragraph, YStack } from "tamagui";
+import { useWorkout } from "../context/WorkoutContext";
 
 export default function Index() {
   const router = useRouter();
+  const { startWorkout } = useWorkout();
+
+  const handleStartWorkout = async () => {
+    await startWorkout();
+    router.push("/workout/select-exercise");
+  };
 
   return (
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
@@ -14,7 +21,7 @@ export default function Index() {
       </Paragraph>
 
       <Button
-        onPress={() => router.push("/workout/select-exercise")}
+        onPress={handleStartWorkout}
         width={200}
         height={200}
         rounded={100}
