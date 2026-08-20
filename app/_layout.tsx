@@ -1,13 +1,23 @@
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
+import { useColorScheme } from "react-native";
+import { TamaguiProvider } from "tamagui";
+import { tamaguiConfig } from "../tamagui.config";
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: "#0a0a0a" },
-        headerTintColor: "#ffffff",
-        contentStyle: { backgroundColor: "#0a0a0a" },
-      }}
-    />
+    <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: "#0a0a0a" },
+            headerTintColor: "#ffffff",
+            contentStyle: { backgroundColor: "#0a0a0a" },
+          }}
+        />
+      </ThemeProvider>
+    </TamaguiProvider>
   );
 }
