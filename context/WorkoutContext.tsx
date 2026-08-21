@@ -9,7 +9,7 @@ interface SetData {
   failure: boolean;
 }
 
-interface ExerciseData {
+export interface CompletedExercise {
   id: string;
   name: string;
   muscleGroup: string;
@@ -18,6 +18,7 @@ interface ExerciseData {
 
 interface WorkoutContextType {
   workoutId: string | null;
+  completedExercises: CompletedExercise[];
   startWorkout: () => Promise<void>;
   finishExercise: (exerciseId: string, sets: SetData[]) => Promise<void>;
 }
@@ -26,10 +27,12 @@ const WorkoutContext = createContext<WorkoutContextType | null>(null);
 
 export function WorkoutProvider({ children }: { children: ReactNode }) {
   const [workoutId, setWorkoutId] = useState<string | null>(null);
+  const [completedExercises, setCompletedExercises] = useState<CompletedExercise[]>([]);
 
   const startWorkout = async () => {
     const workout = await createWorkout();
     setWorkoutId(workout.id);
+    setCompletedExercises([]);
   };
 
   const finishExercise = async (exerciseId: string, sets: SetData[]) => {
@@ -44,10 +47,20 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
       muscleGroup: exercise.muscleGroup,
       sets,
     });
+
+    setCompletedExercises((prev) => [
+      ...prev,
+      {
+        id: exercise.id,
+        name: exercise.name,
+        muscleGroup: exercise.muscleGroup,
+        sets,
+      },
+    ]);
   };
 
   return (
-    <WorkoutContext.Provider value={{ workoutId, startWorkout, finishExercise }}>
+    <WorkoutContext.Provider value={{ workoutId, completedExercises, startWorkout, finishExercise }}>
       {children}
     </WorkoutContext.Provider>
   );

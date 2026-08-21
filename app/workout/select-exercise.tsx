@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { Button, H1, ScrollView, XStack, YStack } from "tamagui";
+import { Button, H1, H2, ScrollView, Separator, XStack, YStack } from "tamagui";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
+import { useWorkout } from "../../context/WorkoutContext";
 
 export default function SelectExercise() {
   const [selectedGroup, setSelectedGroup] = useState<MuscleGroup | null>(null);
   const router = useRouter();
+  const { completedExercises } = useWorkout();
 
   const filteredExercises = selectedGroup
     ? EXERCISES.filter((e) => e.muscleGroup === selectedGroup)
@@ -14,6 +16,38 @@ export default function SelectExercise() {
   return (
     <ScrollView flex={1} bg="$background">
       <YStack p="$4" gap="$4">
+        {completedExercises.length > 0 && (
+          <YStack gap="$2">
+            <H1 color="$color" fontSize={20} fontWeight="bold">
+              Completed Exercises
+            </H1>
+            <Separator borderColor="$gray6" />
+            {completedExercises.map((exercise) => (
+              <XStack
+                key={exercise.id}
+                justify="space-between"
+                items="center"
+                py="$3"
+                px="$4"
+                bg="$gray4"
+                rounded="$4"
+              >
+                <YStack gap="$1">
+                  <H2 color="$color" fontSize={14} fontWeight="600">
+                    {exercise.name}
+                  </H2>
+                  <H2 color="$gray10" fontSize={12}>
+                    {exercise.muscleGroup}
+                  </H2>
+                </YStack>
+                <H2 color="$gray10" fontSize={12}>
+                  {exercise.sets.length} sets
+                </H2>
+              </XStack>
+            ))}
+          </YStack>
+        )}
+
         <H1 color="$color" fontSize={20} fontWeight="bold">
           Choose Muscle Group
         </H1>
