@@ -1,15 +1,91 @@
-import { ActivityIndicator, useColorScheme } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Image, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
-import { Button, TamaguiProvider, YStack, XStack } from "tamagui";
+import { AnimatePresence, Button, Paragraph, TamaguiProvider, XStack, YStack } from "tamagui";
 import { tamaguiConfig } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
 import "../lib/googleSignIn";
 
+function ProfileButton() {
+  const { user, signOut } = useAuth();
+  const [open, setOpen] = useState(false);
+
+  if (!user) return null;
+
+  return (
+    <YStack position="absolute" style={{ top: 50, right: 16, zIndex: 100 }}>
+      <Pressable onPress={() => setOpen(!open)}>
+        <Image
+          source={user.avatarUrl ? { uri: user.avatarUrl } : undefined}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: "#555",
+          }}
+        />
+      </Pressable>
+
+      <AnimatePresence>
+        {open && (
+          <YStack
+            position="absolute"
+            style={{ top: 48, right: 0, minWidth: 180 }}
+            bg="$gray4"
+            rounded="$4"
+            overflow="hidden"
+            elevation={4}
+            enterStyle={{ opacity: 0, y: -4 }}
+            exitStyle={{ opacity: 0, y: -4 }}
+          >
+            <Paragraph
+              px="$4"
+              py="$3"
+              fontSize={13}
+              color="$gray10"
+              borderBottomWidth={1}
+              borderBottomColor="$gray6"
+            >
+              {user.name}
+            </Paragraph>
+            {["History", "Stats", "Settings"].map((label) => (
+              <Button
+                key={label}
+                chromeless
+                onPress={() => setOpen(false)}
+                px="$4"
+                py="$3"
+                style={{ justifyContent: "flex-start" }}
+              >
+                <Button.Text color="white" fontSize={14}>
+                  {label}
+                </Button.Text>
+              </Button>
+            ))}
+            <Button
+              chromeless
+              onPress={() => { setOpen(false); signOut(); }}
+              px="$4"
+              py="$3"
+              style={{ justifyContent: "flex-start" }}
+              borderTopWidth={1}
+              borderTopColor="$gray6"
+            >
+              <Button.Text color="$red10" fontSize={14}>
+                Sign Out
+              </Button.Text>
+            </Button>
+          </YStack>
+        )}
+      </AnimatePresence>
+    </YStack>
+  );
+}
+
 function BottomBar() {
   const router = useRouter();
-  const { signOut } = useAuth();
 
   return (
     <XStack
@@ -31,16 +107,6 @@ function BottomBar() {
           HOME
         </Button.Text>
       </Button>
-      <Button
-        onPress={signOut}
-        bg="$gray5"
-        pressStyle={{ bg: "$gray6", opacity: 0.8 }}
-        px="$6"
-      >
-        <Button.Text color="white" fontSize={14} fontWeight="600">
-          SIGN OUT
-        </Button.Text>
-      </Button>
     </XStack>
   );
 }
@@ -60,6 +126,7 @@ function AppContent() {
   return (
     <WorkoutProvider>
       <YStack flex={1} bg="$background">
+        {user && <ProfileButton />}
         <YStack flex={1}>
           <Stack
             screenOptions={{
