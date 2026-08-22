@@ -86,7 +86,7 @@ describe("SelectExercise Screen", () => {
         {
           id: "flat-bench-press",
           name: "Flat Bench Press",
-          muscleGroup: "chest",
+          muscleGroup: "Chest",
           sets: [
             { id: 1, weight: 135, reps: 10, failure: false },
             { id: 2, weight: 155, reps: 8, failure: true },
@@ -101,6 +101,6 @@ describe("SelectExercise Screen", () => {
 
     expect(screen.getByText("Completed Exercises")).toBeTruthy();
     expect(screen.getByText("Flat Bench Press")).toBeTruthy();
-    expect(screen.getByText("2 sets")).toBeTruthy();
+    expect(screen.getByText("2")).toBeTruthy();
   });
 });

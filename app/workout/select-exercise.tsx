@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { Button, H1, H2, ScrollView, Separator, XStack, YStack } from "tamagui";
+import { Button, H1, H2, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
 import { useWorkout } from "../../context/WorkoutContext";
 
@@ -21,30 +21,56 @@ export default function SelectExercise() {
             <H1 color="$color" fontSize={20} fontWeight="bold">
               Completed Exercises
             </H1>
-            <Separator borderColor="$gray6" />
-            {completedExercises.map((exercise) => (
+            <YStack bg="$gray4" rounded="$4" overflow="hidden">
               <XStack
-                key={exercise.id}
-                justify="space-between"
-                items="center"
-                py="$3"
+                py="$2"
                 px="$4"
-                bg="$gray4"
-                rounded="$4"
+                borderBottomWidth={1}
+                borderBottomColor="$gray6"
               >
-                <YStack gap="$1">
-                  <H2 color="$color" fontSize={14} fontWeight="600">
-                    {exercise.name}
-                  </H2>
-                  <H2 color="$gray10" fontSize={12}>
-                    {exercise.muscleGroup}
-                  </H2>
-                </YStack>
-                <H2 color="$gray10" fontSize={12}>
-                  {exercise.sets.length} sets
+                <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
+                  EXERCISE
+                </H2>
+                <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
+                  MUSCLE
+                </H2>
+                <H2 color="$gray10" fontSize={11} fontWeight="600" flex={1}>
+                  SETS
+                </H2>
+                <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
+                  BEST SET
                 </H2>
               </XStack>
-            ))}
+              {completedExercises.map((exercise) => {
+                const bestSet = exercise.sets.reduce(
+                  (best, s) => (!best || s.weight * s.reps > best.weight * best.reps ? s : best),
+                  null as typeof exercise.sets[0] | null
+                );
+                return (
+                  <XStack
+                    key={exercise.id}
+                    py="$2"
+                    px="$4"
+                    items="center"
+                    borderBottomWidth={1}
+                    borderBottomColor="$gray5"
+                  >
+                    <H2 color="$color" fontSize={13} fontWeight="600" flex={2}>
+                      {exercise.name}
+                    </H2>
+                    <H2 color="$gray10" fontSize={12} flex={2}>
+                      {exercise.muscleGroup}
+                    </H2>
+                    <H2 color="$color" fontSize={13} flex={1}>
+                      {exercise.sets.length}
+                    </H2>
+                    <H2 color="$color" fontSize={13} flex={2}>
+                      {bestSet ? `${bestSet.weight}×${bestSet.reps}` : "—"}
+                    </H2>
+                  </XStack>
+                );
+              })}
+            </YStack>
           </YStack>
         )}
 
