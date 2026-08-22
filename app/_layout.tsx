@@ -19,12 +19,17 @@ function TopBar() {
       bg="$gray4"
       py="$2"
       px="$4"
-      justify="flex-end"
+      justify="space-between"
       items="center"
       borderBottomWidth={1}
       borderBottomColor="$gray6"
       style={{ zIndex: 100 }}
     >
+      <Image
+        source={require("../assets/images/irondog-logo-text-only-dark-mode.png")}
+        style={{ height: 30, width: 128 }}
+        resizeMode="contain"
+      />
       <YStack position="relative">
         <Button
           chromeless
