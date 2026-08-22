@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "workout-tracker",
-    "slug": "workout-tracker",
+    "name": "IronDog",
+    "slug": "irondog",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

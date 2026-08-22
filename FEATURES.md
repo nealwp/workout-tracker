@@ -1,4 +1,4 @@
-# Workout Tracker — Feature Specification
+# IronDog — Feature Specification
 
 ## Purpose
 

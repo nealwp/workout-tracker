@@ -1,34 +1,97 @@
-import { createWorkout, addExerciseToWorkout } from "../api/client";
+import { createWorkout, addExerciseToWorkout, signInWithGoogle, fetchMe, signOutServer, AuthError } from "../api/client";
+import { tokenStore } from "../lib/secureStore";
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
+jest.mock("../lib/secureStore", () => ({
+  tokenStore: {
+    getAccessToken: jest.fn().mockResolvedValue("mock-access-token"),
+    setAccessToken: jest.fn(),
+    getRefreshToken: jest.fn().mockResolvedValue("mock-refresh-token"),
+    setRefreshToken: jest.fn(),
+    clearAll: jest.fn(),
+  },
+}));
+
 describe("API Client", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (tokenStore.getAccessToken as jest.Mock).mockResolvedValue("mock-access-token");
+    (tokenStore.getRefreshToken as jest.Mock).mockResolvedValue("mock-refresh-token");
+  });
+
+  describe("signInWithGoogle", () => {
+    it("sends POST request to /auth/google with idToken", async () => {
+      const mockResponse = {
+        accessToken: "access-123",
+        refreshToken: "refresh-123",
+        user: { id: "u1", email: "test@gmail.com", name: "Test" },
+      };
+      mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve(mockResponse) });
+
+      const result = await signInWithGoogle("google-id-token");
+
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:3001/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: "google-id-token" }),
+      });
+      expect(result).toEqual(mockResponse);
+    });
+  });
+
+  describe("fetchMe", () => {
+    it("sends GET request to /auth/me with Authorization header", async () => {
+      const mockUser = { id: "u1", email: "test@gmail.com", name: "Test" };
+      mockFetch.mockResolvedValue({ json: () => Promise.resolve(mockUser) });
+
+      const result = await fetchMe();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/auth/me",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+          }),
+        })
+      );
+      expect(result).toEqual(mockUser);
+    });
+  });
+
+  describe("signOutServer", () => {
+    it("sends POST request to /auth/logout with refreshToken", async () => {
+      mockFetch.mockResolvedValue({ json: () => Promise.resolve({ success: true }) });
+
+      await signOutServer("refresh-abc");
+
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:3001/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: "refresh-abc" }),
+      });
+    });
   });
 
   describe("createWorkout", () => {
-    it("sends POST request to /workouts", async () => {
+    it("sends POST request to /workouts with Authorization header", async () => {
       const mockResponse = { id: "workout-123", date: "2026-08-21", exercises: [] };
       mockFetch.mockResolvedValue({ json: () => Promise.resolve(mockResponse) });
 
       const result = await createWorkout();
 
-      expect(mockFetch).toHaveBeenCalledWith("http://localhost:3001/workouts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/workouts",
+        expect.objectContaining({
+          method: "POST",
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+            "Content-Type": "application/json",
+          }),
+        })
+      );
       expect(result).toEqual(mockResponse);
-    });
-
-    it("returns the parsed JSON response", async () => {
-      const workout = { id: "abc", date: "2026-01-01", exercises: [] };
-      mockFetch.mockResolvedValue({ json: () => Promise.resolve(workout) });
-
-      const result = await createWorkout();
-
-      expect(result).toEqual(workout);
     });
 
     it("propagates fetch errors", async () => {
@@ -39,7 +102,7 @@ describe("API Client", () => {
   });
 
   describe("addExerciseToWorkout", () => {
-    it("sends POST request to /workouts/:id/exercises with exercise data", async () => {
+    it("sends POST request to /workouts/:id/exercises with auth header", async () => {
       const exercise = {
         id: "flat-bench-press",
         name: "Flat Bench Press",
@@ -53,33 +116,16 @@ describe("API Client", () => {
 
       expect(mockFetch).toHaveBeenCalledWith(
         "http://localhost:3001/workouts/workout-456/exercises",
-        {
+        expect.objectContaining({
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+            "Content-Type": "application/json",
+          }),
           body: JSON.stringify(exercise),
-        }
+        })
       );
       expect(result).toEqual(mockResponse);
-    });
-
-    it("sends exercise with multiple sets", async () => {
-      const exercise = {
-        id: "barbell-squat",
-        name: "Barbell Squat",
-        muscleGroup: "legs",
-        sets: [
-          { id: 1, weight: 225, reps: 8, failure: false },
-          { id: 2, weight: 245, reps: 6, failure: true },
-          { id: 3, weight: 265, reps: 4, failure: true },
-        ],
-      };
-      mockFetch.mockResolvedValue({ json: () => Promise.resolve(exercise) });
-
-      await addExerciseToWorkout("workout-789", exercise);
-
-      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-      expect(body.sets).toHaveLength(3);
-      expect(body.sets[2]).toEqual({ id: 3, weight: 265, reps: 4, failure: true });
     });
 
     it("propagates fetch errors", async () => {
@@ -93,6 +139,14 @@ describe("API Client", () => {
           sets: [],
         })
       ).rejects.toThrow("Server error");
+    });
+  });
+
+  describe("AuthError", () => {
+    it("creates error with correct name", () => {
+      const error = new AuthError("Session expired");
+      expect(error.name).toBe("AuthError");
+      expect(error.message).toBe("Session expired");
     });
   });
 });

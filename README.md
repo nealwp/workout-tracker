@@ -1,4 +1,4 @@
-# Workout Tracker
+# IronDog
 
 A mobile app for tracking weightlifting and bodybuilding workouts. Built for hypertrophy and progressive overload.
 

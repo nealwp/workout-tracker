@@ -1,4 +1,4 @@
-# AGENTS.md — Workout Tracker
+# AGENTS.md — IronDog
 
 ## Expo Version
 
