@@ -99,7 +99,7 @@ describe("SelectExercise Screen", () => {
 
     render(<SelectExercise />, { wrapper: TestWrapper });
 
-    expect(screen.getByText("Completed Exercises")).toBeTruthy();
+    expect(screen.getByText("Completed Exercises ▲")).toBeTruthy();
     expect(screen.getByText("Flat Bench Press")).toBeTruthy();
     expect(screen.getByText("2")).toBeTruthy();
   });

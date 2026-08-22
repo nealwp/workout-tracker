@@ -6,6 +6,7 @@ import { useWorkout } from "../../context/WorkoutContext";
 
 export default function SelectExercise() {
   const [selectedGroup, setSelectedGroup] = useState<MuscleGroup | null>(null);
+  const [completedExpanded, setCompletedExpanded] = useState(true);
   const router = useRouter();
   const { completedExercises } = useWorkout();
 
@@ -18,9 +19,19 @@ export default function SelectExercise() {
       <YStack p="$4" gap="$4">
         {completedExercises.length > 0 && (
           <YStack gap="$2">
-            <H1 color="$color" fontSize={20} fontWeight="bold">
-              Completed Exercises
-            </H1>
+            <Button
+              onPress={() => setCompletedExpanded(!completedExpanded)}
+              bg="transparent"
+              px="$0"
+              py="$0"
+              justify="flex-start"
+              pressStyle={{ opacity: 0.7 }}
+            >
+              <Button.Text color="$color" fontSize={20} fontWeight="bold">
+                Completed Exercises {completedExpanded ? "▲" : "▼"}
+              </Button.Text>
+            </Button>
+            {completedExpanded && (
             <YStack bg="$gray4" rounded="$4" overflow="hidden">
               <XStack
                 py="$2"
@@ -71,6 +82,7 @@ export default function SelectExercise() {
                 );
               })}
             </YStack>
+            )}
           </YStack>
         )}
 
@@ -91,9 +103,9 @@ export default function SelectExercise() {
               rounded="$4"
               pressStyle={{ opacity: 0.8 }}
               flex={1}
-              minWidth="30%"
+              style={{ minWidth: "30%" }}
             >
-              <Button.Text color="white" fontSize={16} fontWeight="600" textAlign="center">
+              <Button.Text color="white" fontSize={16} fontWeight="600" style={{ textAlign: "center" }}>
                 {group.name}
               </Button.Text>
             </Button>
