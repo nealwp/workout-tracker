@@ -14,7 +14,7 @@ jest.mock("@/lib/secureStore", () => ({
   },
 }));
 
-jest.mock("@/api/client", () => ({
+jest.mock("@/lib/api/client", () => ({
   signInWithGoogle: jest.fn(),
   fetchMe: jest.fn(),
   signOutServer: jest.fn(),

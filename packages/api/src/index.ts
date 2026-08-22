@@ -4,11 +4,11 @@ import cors from "cors";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import { Workout, ExerciseData, User, AuthPayload } from "./types";
+import type { Workout, ExerciseData, User, AuthPayload } from "@irondog/shared";
 
 const app = express();
-const PORT = 3001;
-const JWT_SECRET = crypto.randomBytes(32).toString("hex");
+const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString("hex");
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "";
 
 app.use(cors());
@@ -196,5 +196,5 @@ app.post("/workouts/:id/exercises", requireAuth, (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Mock server running at http://localhost:${PORT}`);
+  console.log(`API server running at http://localhost:${PORT}`);
 });

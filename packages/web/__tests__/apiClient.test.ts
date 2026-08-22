@@ -1,4 +1,4 @@
-import { createWorkout, addExerciseToWorkout, signInWithGoogle, fetchMe, signOutServer, AuthError } from "../api/client";
+import { createWorkout, addExerciseToWorkout, signInWithGoogle, fetchMe, signOutServer, AuthError } from "@/lib/api/client";
 import { tokenStore } from "../lib/secureStore";
 
 const mockFetch = jest.fn();
