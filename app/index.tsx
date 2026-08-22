@@ -110,10 +110,6 @@ function HomeView() {
 
   return (
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
-      <Image
-        source={require("../assets/images/irondog-logo.png")}
-        style={{ width: 128, height: 128, borderRadius: 64, marginBottom: 16 }}
-      />
       {user && (
         <Paragraph color="$gray10" fontSize={16} mb="$2">
           Hi, {user.name}

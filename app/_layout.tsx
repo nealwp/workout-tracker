@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ActivityIndicator, Image, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
-import { AnimatePresence, Button, Paragraph, TamaguiProvider, XStack, YStack } from "tamagui";
+import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
 import { tamaguiConfig } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
@@ -23,9 +23,17 @@ function TopBar() {
       items="center"
       borderBottomWidth={1}
       borderBottomColor="$gray6"
+      style={{ zIndex: 100 }}
     >
-      <YStack>
-        <Pressable onPress={() => setOpen(!open)}>
+      <YStack position="relative">
+        <Button
+          chromeless
+          onPress={() => setOpen(!open)}
+          p={0}
+          bg="transparent"
+          hoverStyle={{ bg: "transparent" }}
+          pressStyle={{ bg: "transparent", opacity: 0.7 }}
+        >
           <Image
             source={user.avatarUrl ? { uri: user.avatarUrl } : undefined}
             style={{
@@ -35,19 +43,20 @@ function TopBar() {
               backgroundColor: "#555",
             }}
           />
-        </Pressable>
+        </Button>
 
         <AnimatePresence>
           {open && (
             <YStack
+              key="menu"
               position="absolute"
               style={{ top: 44, right: 0, minWidth: 180 }}
               bg="$gray4"
               rounded="$4"
               overflow="hidden"
               elevation={4}
-              enterStyle={{ opacity: 0, y: -4 }}
-              exitStyle={{ opacity: 0, y: -4 }}
+              enterStyle={{ opacity: 0, y: -8 }}
+              exitStyle={{ opacity: 0, y: -8 }}
             >
               <Paragraph
                 px="$4"
