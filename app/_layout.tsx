@@ -8,79 +8,89 @@ import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
 import "../lib/googleSignIn";
 
-function ProfileButton() {
+function TopBar() {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
 
   if (!user) return null;
 
   return (
-    <YStack position="absolute" style={{ top: 50, right: 16, zIndex: 100 }}>
-      <Pressable onPress={() => setOpen(!open)}>
-        <Image
-          source={user.avatarUrl ? { uri: user.avatarUrl } : undefined}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: "#555",
-          }}
-        />
-      </Pressable>
+    <XStack
+      bg="$gray4"
+      py="$2"
+      px="$4"
+      justify="flex-end"
+      items="center"
+      borderBottomWidth={1}
+      borderBottomColor="$gray6"
+    >
+      <YStack>
+        <Pressable onPress={() => setOpen(!open)}>
+          <Image
+            source={user.avatarUrl ? { uri: user.avatarUrl } : undefined}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: "#555",
+            }}
+          />
+        </Pressable>
 
-      <AnimatePresence>
-        {open && (
-          <YStack
-            position="absolute"
-            style={{ top: 48, right: 0, minWidth: 180 }}
-            bg="$gray4"
-            rounded="$4"
-            overflow="hidden"
-            elevation={4}
-            enterStyle={{ opacity: 0, y: -4 }}
-            exitStyle={{ opacity: 0, y: -4 }}
-          >
-            <Paragraph
-              px="$4"
-              py="$3"
-              fontSize={13}
-              color="$gray10"
-              borderBottomWidth={1}
-              borderBottomColor="$gray6"
+        <AnimatePresence>
+          {open && (
+            <YStack
+              position="absolute"
+              style={{ top: 44, right: 0, minWidth: 180 }}
+              bg="$gray4"
+              rounded="$4"
+              overflow="hidden"
+              elevation={4}
+              enterStyle={{ opacity: 0, y: -4 }}
+              exitStyle={{ opacity: 0, y: -4 }}
             >
-              {user.name}
-            </Paragraph>
-            {["History", "Stats", "Settings"].map((label) => (
+              <Paragraph
+                px="$4"
+                py="$3"
+                fontSize={13}
+                color="$gray10"
+                borderBottomWidth={1}
+                borderBottomColor="$gray6"
+              >
+                {user.name}
+              </Paragraph>
+              {["History", "Stats", "Settings"].map((label) => (
+                <Button
+                  key={label}
+                  chromeless
+                  onPress={() => setOpen(false)}
+                  px="$4"
+                  py="$3"
+                  style={{ justifyContent: "flex-start" }}
+                >
+                  <Button.Text color="white" fontSize={14}>
+                    {label}
+                  </Button.Text>
+                </Button>
+              ))}
               <Button
-                key={label}
                 chromeless
-                onPress={() => setOpen(false)}
+                onPress={() => { setOpen(false); signOut(); }}
                 px="$4"
                 py="$3"
                 style={{ justifyContent: "flex-start" }}
+                borderTopWidth={1}
+                borderTopColor="$gray6"
               >
-                <Button.Text color="white" fontSize={14}>
-                  {label}
+                <Button.Text color="$red10" fontSize={14}>
+                  Sign Out
                 </Button.Text>
               </Button>
-            ))}
-            <Button
-              chromeless
-              onPress={() => { setOpen(false); signOut(); }}
-              px="$4"
-              py="$3"
-              style={{ justifyContent: "flex-start" }}
-              borderTopWidth={1}
-              borderTopColor="$gray6"
-            >
-              <Button.Text color="$red10" fontSize={14}>
-                Sign Out
-              </Button.Text>
-            </Button>
-          </YStack>
-        )}
-      </AnimatePresence>
-    </YStack>
+            </YStack>
+          )}
+        </AnimatePresence>
+      </YStack>
+    </XStack>
   );
 }
 
@@ -92,21 +102,17 @@ function BottomBar() {
       bg="$gray4"
       py="$3"
       px="$4"
-      justify="space-between"
+      justify="center"
       items="center"
       borderTopWidth={1}
       borderTopColor="$gray6"
     >
-      <Button
-        onPress={() => router.push("/")}
-        bg="$gray5"
-        pressStyle={{ bg: "$gray6", opacity: 0.8 }}
-        px="$6"
-      >
-        <Button.Text color="white" fontSize={14} fontWeight="600">
-          HOME
-        </Button.Text>
-      </Button>
+      <Pressable onPress={() => router.push("/")}>
+        <Image
+          source={require("../assets/images/irondog-logo-no-text.png")}
+          style={{ width: 48, height: 48, borderRadius: 24 }}
+        />
+      </Pressable>
     </XStack>
   );
 }
@@ -126,7 +132,7 @@ function AppContent() {
   return (
     <WorkoutProvider>
       <YStack flex={1} bg="$background">
-        {user && <ProfileButton />}
+        {user && <TopBar />}
         <YStack flex={1}>
           <Stack
             screenOptions={{
