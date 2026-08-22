@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Image } from "react-native";
+import { Fontisto } from "@expo/vector-icons";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import * as Crypto from "expo-crypto";
@@ -61,6 +62,10 @@ function LoginView() {
 
   return (
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
+      <Image
+        source={require("../assets/images/irondog-logo.png")}
+        style={{ width: 96, height: 96, marginBottom: 16 }}
+      />
       <H1 color="$color" fontSize={32} fontWeight="bold" letterSpacing={2}>
         IRONDOG
       </H1>
@@ -78,7 +83,9 @@ function LoginView() {
           px="$6"
           py="$4"
           rounded="$4"
+          gap="$2"
         >
+          <Fontisto name="google" size={20} color="#4285F4" />
           <Button.Text color="black" fontSize={16} fontWeight="600">
             Sign in with Google
           </Button.Text>
@@ -106,6 +113,10 @@ function HomeView() {
 
   return (
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
+      <Image
+        source={require("../assets/images/irondog-logo.png")}
+        style={{ width: 96, height: 96, marginBottom: 16 }}
+      />
       <H1 color="$color" fontSize={32} fontWeight="bold" letterSpacing={2}>
         IRONDOG
       </H1>

@@ -16,6 +16,10 @@ jest.mock("expo-router", () => ({
   }),
 }));
 
+jest.mock("@expo/vector-icons", () => ({
+  Fontisto: "Fontisto",
+}));
+
 jest.mock("expo-auth-session", () => ({
   useAuthRequest: () => [null, null, mockPromptAsync],
   makeRedirectUri: () => "https://expo.dev/@placeholder/redirect",

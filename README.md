@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/images/irondog-logo.png" alt="IronDog" width="128" />
+</p>
+
 # IronDog
 
 A mobile app for tracking weightlifting and bodybuilding workouts. Built for hypertrophy and progressive overload.
