@@ -15,6 +15,9 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/helpers/"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|tamagui|@tamagui/.*|@react-native/babel-preset)"
     ]
@@ -51,7 +54,7 @@
     "tamagui": "^2.7.7"
   },
   "devDependencies": {
-    "@testing-library/react-native": "^14.0.1",
+    "@testing-library/react-native": "^12.9.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "29.5.14",
@@ -60,6 +63,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "jest": "~29.7.0",
+    "jest-environment-jsdom": "^30.4.1",
     "jest-expo": "~54.0.18",
     "tsx": "^4.23.12",
     "typescript": "~5.9.2"
