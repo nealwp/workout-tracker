@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import { AnimatePresence, Button, H1, H2, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
 import { useWorkout } from "../../context/WorkoutContext";
@@ -87,7 +88,7 @@ export default function SelectExercise() {
               pressStyle={{ opacity: 0.7 }}
             >
               <Button.Text color="$color" fontSize={20} fontWeight="bold">
-                Completed Exercises {completedExpanded ? "▲" : "▼"}
+                Completed Exercises <MaterialIcons name={completedExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={20} color="#aaa" />
               </Button.Text>
             </Button>
             <AnimatePresence>
@@ -121,7 +122,7 @@ export default function SelectExercise() {
                   </XStack>
                   {completedExercises.map((exercise) => {
                     const bestSet = exercise.sets.reduce(
-                      (best, s) => (!best || s.weight * s.reps > best.weight * best.reps ? s : best),
+                      (best, s) => (!best || s.weight > best.weight ? s : best),
                       null as typeof exercise.sets[0] | null
                     );
                     return (
