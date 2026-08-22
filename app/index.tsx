@@ -64,11 +64,8 @@ function LoginView() {
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
       <Image
         source={require("../assets/images/irondog-logo.png")}
-        style={{ width: 96, height: 96, marginBottom: 16 }}
+        style={{ width: 128, height: 128, borderRadius: 64, marginBottom: 16 }}
       />
-      <H1 color="$color" fontSize={32} fontWeight="bold" letterSpacing={2}>
-        IRONDOG
-      </H1>
       <Paragraph color="$gray10" fontSize={14} letterSpacing={1} mb={64}>
         Hypertrophy & Progressive Overload
       </Paragraph>
@@ -115,11 +112,8 @@ function HomeView() {
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
       <Image
         source={require("../assets/images/irondog-logo.png")}
-        style={{ width: 96, height: 96, marginBottom: 16 }}
+        style={{ width: 128, height: 128, borderRadius: 64, marginBottom: 16 }}
       />
-      <H1 color="$color" fontSize={32} fontWeight="bold" letterSpacing={2}>
-        IRONDOG
-      </H1>
       {user && (
         <Paragraph color="$gray10" fontSize={16} mb="$2">
           Hi, {user.name}

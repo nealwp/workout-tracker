@@ -67,9 +67,9 @@ beforeEach(() => {
 });
 
 describe("Index Screen", () => {
-  it("renders the app title", () => {
+  it("renders the tagline", () => {
     render(<Index />, { wrapper: TestWrapper });
-    expect(screen.getByText("IRONDOG")).toBeTruthy();
+    expect(screen.getByText("Hypertrophy & Progressive Overload")).toBeTruthy();
   });
 
   it("renders sign in button when not authenticated", () => {
