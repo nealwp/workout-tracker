@@ -1,30 +1,111 @@
 <p align="center">
-  <img src="assets/images/irondog-logo.png" alt="IronDog" width="128" />
+  <img src="packages/web/assets/images/irondog-logo.png" alt="IronDog" width="128" />
 </p>
 
-# IronDog
+# IronDog - Workout Tracker
 
-A mobile app for tracking weightlifting and bodybuilding workouts. Built for hypertrophy and progressive overload.
+![CI Status](https://github.com/nealwp/workout-tracker/workflows/CI/badge.svg)
 
-## Features
+Hypertrophy and progressive overload tracking for serious lifters.
 
-- Start a workout for the current day
-- Exercises organized by muscle group (chest, shoulders, back, arms, legs)
-- Track sets, weight, reps, and failure status
-- Weight recommendations based on previous sessions
+## Architecture
 
-## Tech Stack
+This is a monorepo containing:
 
-- Expo SDK 54
-- React Native 0.81
-- TypeScript
-- Tamagui UI
-- Express (mock API)
+- **`packages/shared`** - TypeScript types shared between API and web
+- **`packages/api`** - Express.js REST API
+- **`packages/web`** - Expo app (web + mobile)
 
-## Getting Started
+## Development
+
+### Prerequisites
+- Node.js 20+
+- npm 10+
+
+### Quick Start
 
 ```bash
-npm install
-npm run server   # Start mock API on port 3001
-npm start        # Start Expo app
+# Install all dependencies
+npm install --legacy-peer-deps
+
+# Run API and web dev servers together
+npm run dev
+
+# Or run separately
+npm run dev:api   # API on localhost:3001
+npm run dev:web   # Web on localhost:8081
 ```
+
+### Working on Individual Packages
+
+```bash
+# Build specific package
+npm run build --workspace=@irondog/api
+
+# Run tests
+npm test
+
+# Run tests for specific package
+npm run test --workspace=@irondog/web
+
+# Lint all code
+npm run lint
+```
+
+### Project Structure
+
+```
+workout-tracker/
+├── packages/
+│   ├── shared/          # Shared TypeScript types
+│   │   └── src/types/   # User, Workout, Exercise, etc.
+│   ├── api/             # Express REST API
+│   │   └── src/         # Routes, middleware, JWT auth
+│   └── web/             # Expo web/mobile app
+│       ├── app/         # Expo Router screens
+│       ├── context/     # React Context providers
+│       └── lib/         # API client, utilities
+├── .github/workflows/   # CI/CD pipelines
+└── package.json         # Root workspace config
+```
+
+## Testing
+
+All packages include tests:
+
+```bash
+npm test                              # Run all tests
+npm run test:watch --workspace=@irondog/web    # Watch mode
+```
+
+Currently: **62 tests passing** ✅
+
+## Deployment
+
+### Production URLs
+- **Web**: https://irondog.fit (AWS Amplify) - _Coming soon_
+- **API**: https://api.irondog.fit (AWS Elastic Beanstalk) - _Coming soon_
+
+### Deployment Workflow
+- Push to `main` triggers CI/CD
+- API deploys to Elastic Beanstalk (us-west-2)
+- Web deploys via Amplify auto-deployment
+- Path filters ensure only changed packages deploy
+
+## Environment Variables
+
+Each package requires environment variables. See:
+- `packages/api/.env.example`
+- Copy to `.env` in each package for local development
+
+## Contributing
+
+1. Create feature branch from `main`
+2. Make changes
+3. Run `npm test` and `npm run lint`
+4. Push - CI will run automatically
+5. Create PR
+
+## License
+
+Private - All Rights Reserved
