@@ -90,8 +90,10 @@ export default function SelectExercise() {
               px="$5"
               rounded="$4"
               pressStyle={{ opacity: 0.8 }}
+              flex={1}
+              minWidth="30%"
             >
-              <Button.Text color="white" fontSize={16} fontWeight="600">
+              <Button.Text color="white" fontSize={16} fontWeight="600" textAlign="center">
                 {group.name}
               </Button.Text>
             </Button>
