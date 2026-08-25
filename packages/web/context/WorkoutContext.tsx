@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { createWorkout, addExerciseToWorkout } from "@/api/client";
+import { createWorkout, addExerciseToWorkout } from "@/lib/api/client";
 import { EXERCISES } from "@/data/exercises";
 
 interface SetData {

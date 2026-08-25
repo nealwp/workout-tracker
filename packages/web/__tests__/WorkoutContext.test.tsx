@@ -2,9 +2,9 @@ import React from "react";
 import { Text } from "react-native";
 import { render, act, screen } from "@testing-library/react-native";
 import { WorkoutProvider, useWorkout } from "../context/WorkoutContext";
-import { createWorkout, addExerciseToWorkout } from "../api/client";
+import { createWorkout, addExerciseToWorkout } from "@/lib/api/client";
 
-jest.mock("../api/client", () => ({
+jest.mock("@/lib/api/client", () => ({
   createWorkout: jest.fn(),
   addExerciseToWorkout: jest.fn(),
 }));

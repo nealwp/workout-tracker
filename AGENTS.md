@@ -1,20 +1,29 @@
 # AGENTS.md — IronDog
 
+## Monorepo Structure
+
+**IronDog is now an npm workspaces monorepo** with three packages:
+
+- **`@irondog/shared`** - TypeScript types shared across packages
+- **`@irondog/api`** - Express REST API server
+- **`@irondog/web`** - Expo app (web + mobile)
+
 ## Expo Version
 
 Expo SDK 54. Read the exact versioned docs at https://docs.expo.dev/versions/v54.0.0/ before writing any code.
 
 - `expo@~54.0.35`, `react@19.1.0`, `react-native@0.81.5`, `typescript@~5.9.2`
-- `typedRoutes: true` and `reactCompiler: true` are enabled in `app.json` experiments
+- `typedRoutes: true` and `reactCompiler: true` are enabled in `packages/web/app.json` experiments
 - Expo generates route types in `.expo/types/router.d.ts` automatically — do not hand-edit
 
 ## Tech Stack
 
 - **UI**: Tamagui v2.7.7 with `@tamagui/config/v5`. Always use shorthands: `bg`, `rounded`, `justify`, `items`, `p`, `px`, `py`, `mt`, `mb`, etc. (`onlyAllowShorthands: true` is default)
 - **Navigation**: Expo Router v6 (file-based) with Stack navigator
-- **State**: React Context (`context/WorkoutContext.tsx`)
-- **API**: Express 5.2.1 mock server on port 3001 (`server/index.ts`)
+- **State**: React Context (`packages/web/context/WorkoutContext.tsx`)
+- **API**: Express 5.2.1 server on port 3001 (`packages/api/src/index.ts`)
 - **Icons**: `@expo/vector-icons`
+- **Types**: Shared via `@irondog/shared` package
 
 ## Design
 
@@ -25,22 +34,38 @@ Expo SDK 54. Read the exact versioned docs at https://docs.expo.dev/versions/v54
 
 ## Commands
 
+### Workspace Commands
 | Command | Description |
 |---|---|
-| `npm start` | Start Expo dev server |
-| `npm test` | Run all Jest tests |
-| `npm run test:watch` | Run Jest in watch mode |
-| `npm run lint` | Run ESLint via `expo lint` |
-| `npm run server` | Start Express mock server on port 3001 |
-| `npx tsc --noEmit` | Type-check without emitting |
+| `npm run dev` | Start all dev servers (API + Web) |
+| `npm run dev:api` | Start API server only (:3001) |
+| `npm run dev:web` | Start Expo dev server (:8081) |
+| `npm run build` | Build all packages |
+| `npm test` | Run all tests across packages |
+| `npm run lint` | Lint all packages |
 
-Always run `npm run lint` and `npx tsc --noEmit` after making code changes.
+### Package-Specific Commands
+| Command | Description |
+|---|---|
+| `npm run build --workspace=@irondog/api` | Build API only |
+| `npm run test --workspace=@irondog/web` | Test web package only |
+| `npm run type-check --workspace=@irondog/api` | TypeScript check API only |
+
+Always run `npm test` and `npm run lint` after making code changes.
+
+## Development Workflow
+
+1. Make changes in any package
+2. Types from `@irondog/shared` are automatically available
+3. Run tests: `npm test`
+4. Push to branch - CI runs automatically
+5. Create PR
 
 ## Testing
 
 ### Framework
 
-Jest with `jest-expo` preset. Config lives in `package.json` under `"jest"`.
+Jest with `jest-expo` preset. Config lives in `packages/web/package.json` under `"jest"`.
 
 ### Key Dependencies
 
@@ -50,48 +75,89 @@ Jest with `jest-expo` preset. Config lives in `package.json` under `"jest"`.
 
 ### Writing Tests
 
-- Place tests in `__tests__/` directory
+- Place tests in `packages/web/__tests__/` directory
 - Use `.test.ts` for pure data/logic, `.test.tsx` for component tests
 - Helper files go in `__tests__/helpers/` (excluded via `testPathIgnorePatterns`)
 - Component tests must wrap with `TestWrapper` from `__tests__/helpers/TestWrapper.tsx` which provides `TamaguiProvider` with `defaultTheme="dark"`
 - Mock `expo-router` with `jest.mock("expo-router", ...)` — provide `useRouter` and `useLocalSearchParams` as needed
-- Mock `WorkoutContext` with `jest.mock("../context/WorkoutContext", ...)` and cast to `jest.MockedFunction`
+- Mock `WorkoutContext` with `jest.mock("@/context/WorkoutContext", ...)` and cast to `jest.MockedFunction`
 
 ### Transform Ignore
 
-`transformIgnorePatterns` in `package.json` allows transforming: `react-native`, `expo`, `@expo/*`, `tamagui`, `@tamagui/*`, `react-navigation`, `@react-navigation/*`, `react-native-svg`, `native-base`, `@react-native/babel-preset`, `@sentry/react-native`, `@expo-google-fonts/*`.
+`transformIgnorePatterns` in `packages/web/package.json` allows transforming: `react-native`, `expo`, `@expo/*`, `tamagui`, `@tamagui/*`, `react-navigation`, `@react-navigation/*`, `react-native-svg`, `native-base`, `@react-native/babel-preset`, `@sentry/react-native`, `@expo-google-fonts/*`.
 
 ## Path Aliases
 
-`@/*` maps to `<rootDir>/*` (configured in `tsconfig.json`). Use for imports like `@/api/client`, `@/data/exercises`, `@/context/WorkoutContext`.
+### Web Package
+`@/*` maps to `packages/web/*` (configured in `packages/web/tsconfig.json`). Use for imports like `@/lib/api/client`, `@/data/exercises`, `@/context/WorkoutContext`.
+
+### Shared Types
+`@irondog/shared` imports from `packages/shared/src`. Example:
+```typescript
+import type { User, Workout, ExerciseData } from '@irondog/shared';
+```
+
+## Type Safety
+
+- **Shared types** in `packages/shared/src/types/`
+- **API imports**: `import type { User } from '@irondog/shared'`
+- **Web imports**: `import type { Workout } from '@irondog/shared'`
+- Changes to types immediately show errors in API and web
+
+### Adding New Types
+
+1. Add to `packages/shared/src/types/` (e.g., `workout.ts`, `user.ts`)
+2. Export from `packages/shared/src/types/index.ts`
+3. Export from `packages/shared/src/index.ts`
+4. Import in API or web as needed
 
 ## Project Structure
 
 ```
-app/                    # Expo Router file-based routes
-  _layout.tsx           # Root layout: TamaguiProvider + ThemeProvider + WorkoutProvider + Stack
-  index.tsx             # Home screen — "LFG" button to start workout
-  workout/
-    select-exercise.tsx # Two-step picker: muscle group → exercise
-    exercise.tsx        # Exercise tracking: weight/reps inputs, set logging, failure toggle
-context/
-  WorkoutContext.tsx    # WorkoutProvider with startWorkout, finishExercise
-data/
-  exercises.ts         # Exercise catalog: MuscleGroup[], Exercise[]
-api/
-  client.ts            # createWorkout(), addExerciseToWorkout() — fetch to localhost:3001
-server/
-  index.ts             # Express mock server (port 3001, CORS enabled)
-  types.ts             # Workout, ExerciseData, SetData interfaces
-__tests__/
-  helpers/
-    TestWrapper.tsx     # TamaguiProvider wrapper for component tests
-  exercises.test.ts     # Exercise catalog data tests
-  WorkoutContext.test.tsx
-  apiClient.test.ts
-  Index.test.tsx
-  SelectExercise.test.tsx
-  ExerciseTracker.test.tsx
+packages/
+  shared/                         # Shared TypeScript types
+    src/
+      types/
+        workout.ts                # Workout, ExerciseData, SetData
+        user.ts                   # User interface
+        auth.ts                   # AuthTokens, AuthPayload
+        index.ts                  # Re-exports all types
+      index.ts                    # Main entry point
+  
+  api/                            # Express REST API
+    src/
+      index.ts                    # Express app with routes
+    .env.example                  # Environment variables template
+    package.json
+    tsconfig.json
+  
+  web/                            # Expo web/mobile app
+    app/                          # Expo Router file-based routes
+      _layout.tsx                 # Root layout with providers
+      index.tsx                   # Home screen — LFG button
+      workout/
+        select-exercise.tsx       # Muscle group → exercise picker
+        exercise.tsx              # Exercise tracking screen
+    context/
+      WorkoutContext.tsx          # Workout state management
+      AuthContext.tsx             # Authentication state
+    lib/
+      api/client.ts               # API client functions
+      config.ts                   # Environment config
+      secureStore.ts              # Token storage
+    data/
+      exercises.ts                # Exercise catalog
+    __tests__/                    # Jest tests
+      helpers/
+        TestWrapper.tsx           # Test utility wrapper
+    package.json
+    tsconfig.json
+
+.github/
+  workflows/
+    ci.yml                        # Lint, test, build on PR/push
+    deploy-api.yml                # Deploy API to AWS Beanstalk
+    deploy-web.yml                # Deploy web to AWS Amplify
 ```
 
 ## Conventions
@@ -101,5 +167,28 @@ __tests__/
 - Tamagui shorthands only (`bg` not `backgroundColor`, `p` not `padding`)
 - All screen components default-exported
 - API calls use native `fetch` (no axios)
-- Express server uses in-memory storage (no database)
+- Express server uses in-memory storage (MVP - database TBD)
 - UUIDs via `crypto.randomUUID()`
+
+## Deployment
+
+### Architecture
+- Monorepo with npm workspaces
+- CI/CD via GitHub Actions
+- Hosting: AWS us-west-2 region
+
+### Production URLs (Coming Soon)
+- **Web**: https://irondog.fit (AWS Amplify)
+- **API**: https://api.irondog.fit (AWS Elastic Beanstalk)
+
+### CI/CD Pipeline
+- Push to `main` triggers deployments
+- Path filters: only deploy changed packages
+- API workflow: build → package → deploy to Beanstalk
+- Web workflow: build → deploy via Amplify auto-deployment
+
+### Environment Variables
+- **API**: `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `JWT_SECRET`, `PORT`, `NODE_ENV`
+- **Web**: `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
+
+See `.env.example` files in each package.

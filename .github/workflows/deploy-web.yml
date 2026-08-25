@@ -1,0 +1,61 @@
+name: Deploy Web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/web/**'
+      - 'packages/shared/**'
+      - '.github/workflows/deploy-web.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to AWS Amplify
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: Build web app
+        env:
+          EXPO_PUBLIC_API_URL: https://api.irondog.fit
+          # EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID will be set in Amplify console
+        run: npm run build:web --workspace=@irondog/web
+      
+      - name: Save build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build-${{ github.sha }}
+          path: packages/web/dist/
+          retention-days: 7
+      
+      - name: Deployment status
+        run: |
+          echo "✅ Web build successful"
+          echo "📦 Build artifacts ready in packages/web/dist/"
+          echo ""
+          echo "🚀 AWS Amplify auto-deploys from GitHub"
+          echo ""
+          echo "Deployment handled by AWS Amplify:"
+          echo "- Amplify monitors this GitHub repository"
+          echo "- Auto-deploys on push to main branch"
+          echo "- Build settings configured in Amplify console"
+          echo ""
+          echo "This workflow validates the build works correctly"
+          echo ""
+          echo "Next steps:"
+          echo "1. Connect GitHub repo to AWS Amplify (us-west-2)"
+          echo "2. Configure build settings for packages/web"
+          echo "3. Add environment variables in Amplify console"
+          echo "4. Configure custom domain: irondog.fit"

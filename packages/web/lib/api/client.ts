@@ -1,6 +1,8 @@
+import type { ExerciseData } from "@irondog/shared";
 import { tokenStore } from "@/lib/secureStore";
+import { API_BASE_URL } from "../config";
 
-const API_BASE = "http://localhost:3001";
+const API_BASE = API_BASE_URL;
 
 export class AuthError extends Error {
   constructor(message: string) {
@@ -94,12 +96,7 @@ export async function createWorkout() {
 
 export async function addExerciseToWorkout(
   workoutId: string,
-  exercise: {
-    id: string;
-    name: string;
-    muscleGroup: string;
-    sets: { id: number; weight: number; reps: number; failure: boolean }[];
-  }
+  exercise: ExerciseData
 ) {
   const res = await authFetch(`/workouts/${workoutId}/exercises`, {
     method: "POST",

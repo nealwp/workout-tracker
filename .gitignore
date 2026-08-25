@@ -9,6 +9,12 @@ dist/
 web-build/
 expo-env.d.ts
 
+# Workspace builds
+packages/*/dist/
+packages/*/build/
+packages/web/web-build/
+packages/web/.expo/
+
 # Native
 .kotlin/
 *.orig.*

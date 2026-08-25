@@ -18,22 +18,3 @@ export interface Workout {
   date: string;
   exercises: ExerciseData[];
 }
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl: string | null;
-  googleId: string;
-  createdAt: string;
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface AuthPayload {
-  userId: string;
-  email: string;
-}

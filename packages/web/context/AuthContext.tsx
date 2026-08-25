@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { signInWithGoogle, fetchMe, signOutServer } from "@/api/client";
+import { signInWithGoogle, fetchMe, signOutServer } from "@/lib/api/client";
 import { tokenStore } from "@/lib/secureStore";
 
 export interface User {
