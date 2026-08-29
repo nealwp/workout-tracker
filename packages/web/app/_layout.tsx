@@ -3,7 +3,7 @@ import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "r
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
 import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
-import { tamaguiConfig } from "../tamagui.config";
+import { tamaguiConfig, DARK_BACKGROUND } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
 
@@ -14,6 +14,7 @@ if (Platform.OS !== "web") {
 
 function TopBar() {
   const { user, signOut } = useAuth();
+  const colorScheme = useColorScheme();
   const [open, setOpen] = useState(false);
 
   if (!user) return null;
@@ -26,11 +27,15 @@ function TopBar() {
       justify="space-between"
       items="center"
       borderBottomWidth={1}
-      borderBottomColor="$gray6"
+      borderBottomColor="$gray7"
       style={{ zIndex: 100 }}
     >
       <Image
-        source={require("../assets/images/irondog-logo-text-only-dark-mode.png")}
+        source={
+          colorScheme === "dark"
+            ? require("../assets/images/irondog-logo-text-only-dark-mode.png")
+            : require("../assets/images/irondog-logo-text-only-light-mode.png")
+        }
         style={{ height: 30, width: 128 }}
         resizeMode="contain"
       />
@@ -71,7 +76,7 @@ function TopBar() {
                 px="$4"
                 py="$3"
                 fontSize={13}
-                color="$gray10"
+                color="$gray11"
                 borderBottomWidth={1}
                 borderBottomColor="$gray6"
               >
@@ -86,7 +91,7 @@ function TopBar() {
                   py="$3"
                   style={{ justifyContent: "flex-start" }}
                 >
-                  <Button.Text color="white" fontSize={14}>
+                  <Button.Text color="$gray12" fontSize={14}>
                     {label}
                   </Button.Text>
                 </Button>
@@ -100,7 +105,7 @@ function TopBar() {
                 borderTopWidth={1}
                 borderTopColor="$gray6"
               >
-                <Button.Text color="$red10" fontSize={14}>
+                <Button.Text color="$red11" fontSize={14}>
                   Sign Out
                 </Button.Text>
               </Button>
@@ -123,7 +128,7 @@ function BottomBar() {
       justify="center"
       items="center"
       borderTopWidth={1}
-      borderTopColor="$gray6"
+      borderTopColor="$gray7"
     >
       <Pressable onPress={() => router.push("/")}>
         <Image
@@ -155,7 +160,7 @@ function AppContent() {
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor: "#0a0a0a" },
+              contentStyle: { backgroundColor: colorScheme === "dark" ? DARK_BACKGROUND : "#f7f7f7" },
             }}
           />
         </YStack>

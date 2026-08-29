@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AnimatePresence, Button, H1, H2, ScrollView, XStack, YStack } from "tamagui";
+import { AnimatePresence, Button, H1, H2, ScrollView, XStack, YStack, useTheme } from "tamagui";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
 import { useWorkout } from "../../context/WorkoutContext";
 
@@ -9,6 +9,7 @@ export default function SelectExercise() {
   const [selectedGroup, setSelectedGroup] = useState<MuscleGroup | null>(null);
   const [completedExpanded, setCompletedExpanded] = useState(true);
   const router = useRouter();
+  const theme = useTheme();
   const { completedExercises } = useWorkout();
 
   const filteredExercises = selectedGroup
@@ -35,9 +36,14 @@ export default function SelectExercise() {
               rounded="$4"
               pressStyle={{ opacity: 0.8 }}
               flex={1}
-              style={{ minWidth: "30%" }}
+              style={{ minWidth: "45%" }}
             >
-              <Button.Text color="white" fontSize={16} fontWeight="600" style={{ textAlign: "center" }}>
+              <Button.Text
+                color={selectedGroup === group.id ? "white" : "$gray12"}
+                fontSize={16}
+                fontWeight="600"
+                style={{ textAlign: "center" }}
+              >
                 {group.name}
               </Button.Text>
             </Button>
@@ -68,7 +74,7 @@ export default function SelectExercise() {
                   pressStyle={{ opacity: 0.8 }}
                   justify="flex-start"
                 >
-                  <Button.Text color="white" fontSize={16}>
+                  <Button.Text color="$gray12" fontSize={16}>
                     {exercise.name}
                   </Button.Text>
                 </Button>
@@ -88,7 +94,7 @@ export default function SelectExercise() {
               pressStyle={{ opacity: 0.7 }}
             >
               <Button.Text color="$color" fontSize={20} fontWeight="bold">
-                Completed Exercises <MaterialIcons name={completedExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={20} color="#aaa" />
+                Completed Exercises <MaterialIcons name={completedExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={20} color={theme.gray11?.val ?? "#aaa"} />
               </Button.Text>
             </Button>
             <AnimatePresence>
@@ -107,18 +113,18 @@ export default function SelectExercise() {
                     borderBottomWidth={1}
                     borderBottomColor="$gray6"
                   >
-                    <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
-                      EXERCISE
-                    </H2>
-                    <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
-                      MUSCLE
-                    </H2>
-                    <H2 color="$gray10" fontSize={11} fontWeight="600" flex={1}>
-                      SETS
-                    </H2>
-                    <H2 color="$gray10" fontSize={11} fontWeight="600" flex={2}>
-                      BEST SET
-                    </H2>
+<H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
+                        EXERCISE
+                      </H2>
+                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
+                        MUSCLE
+                      </H2>
+                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={1}>
+                        SETS
+                      </H2>
+                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
+                        BEST SET
+                      </H2>
                   </XStack>
                   {completedExercises.map((exercise) => {
                     const bestSet = exercise.sets.reduce(
@@ -137,7 +143,7 @@ export default function SelectExercise() {
                         <H2 color="$color" fontSize={13} fontWeight="600" flex={2}>
                           {exercise.name}
                         </H2>
-                        <H2 color="$gray10" fontSize={12} flex={2}>
+                        <H2 color="$gray11" fontSize={12} flex={2}>
                           {exercise.muscleGroup}
                         </H2>
                         <H2 color="$color" fontSize={13} flex={1}>

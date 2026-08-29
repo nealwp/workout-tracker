@@ -37,7 +37,7 @@ Expo SDK 54. Read the exact versioned docs at https://docs.expo.dev/versions/v54
 
 ## Design
 
-- Dark theme by default (`#0a0a0a` background)
+- Dark theme by default (dark gray `#1a1a1a` background)
 - Gym-use-first UX: large touch targets, minimal taps, easy one-handed input
 - No social features, no gamification — just tracking and progression
 - See `FEATURES.md` for full feature specification

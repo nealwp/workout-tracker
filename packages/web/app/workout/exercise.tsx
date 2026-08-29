@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { TextInput } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Button, H1, H2, Separator, ScrollView, XStack, YStack } from "tamagui";
+import { Button, H1, H2, Input, Separator, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES } from "@/data/exercises";
 import { useWorkout } from "../../context/WorkoutContext";
 
@@ -89,7 +88,7 @@ export default function ExerciseTracker() {
           <H1 color="$color" fontSize={24} fontWeight="bold">
             {exercise.name}
           </H1>
-          <H2 color="$gray10" fontSize={14}>
+          <H2 color="$gray11" fontSize={14}>
             Set {currentSetNumber}
           </H2>
         </YStack>
@@ -99,18 +98,16 @@ export default function ExerciseTracker() {
             <H2 color="$color" fontSize={12} fontWeight="600">
               WEIGHT (lbs)
             </H2>
-            <TextInput
-              style={{
-                backgroundColor: "#1a1a1a",
-                color: "white",
-                padding: 16,
-                borderRadius: 8,
-                fontSize: 24,
-                fontWeight: "bold",
-              }}
+            <Input
+              bg="$gray5"
+              color="$color"
+              p="$4"
+              rounded="$4"
+              fontSize={24}
+              fontWeight="bold"
               keyboardType="decimal-pad"
               placeholder="0"
-              placeholderTextColor="#666"
+              placeholderTextColor="$placeholderColor"
               value={weight}
               onChangeText={setWeight}
             />
@@ -120,18 +117,16 @@ export default function ExerciseTracker() {
             <H2 color="$color" fontSize={12} fontWeight="600">
               REPS
             </H2>
-            <TextInput
-              style={{
-                backgroundColor: "#1a1a1a",
-                color: "white",
-                padding: 16,
-                borderRadius: 8,
-                fontSize: 24,
-                fontWeight: "bold",
-              }}
+            <Input
+              bg="$gray5"
+              color="$color"
+              p="$4"
+              rounded="$4"
+              fontSize={24}
+              fontWeight="bold"
               keyboardType="number-pad"
               placeholder="0"
-              placeholderTextColor="#666"
+              placeholderTextColor="$placeholderColor"
               value={reps}
               onChangeText={setReps}
             />
@@ -142,7 +137,7 @@ export default function ExerciseTracker() {
             bg={failure ? "$red10" : "$gray5"}
             pressStyle={{ opacity: 0.8 }}
           >
-            <Button.Text color="white" fontSize={14} fontWeight="600">
+            <Button.Text color={failure ? "white" : "$gray12"} fontSize={14} fontWeight="600">
               {failure ? "FAILURE ✓" : "TAKEN TO FAILURE?"}
             </Button.Text>
           </Button>
@@ -183,7 +178,7 @@ export default function ExerciseTracker() {
                   <H2 color="$color" fontSize={16} fontWeight="bold">
                     {set.weight} lbs
                   </H2>
-                  <H2 color="$gray10" fontSize={14}>
+                  <H2 color="$gray11" fontSize={14}>
                     × {set.reps}
                   </H2>
                   {set.failure && (
@@ -202,7 +197,7 @@ export default function ExerciseTracker() {
           bg="$gray5"
           pressStyle={{ bg: "$gray6", opacity: 0.8 }}
         >
-          <Button.Text color="white" fontSize={16} fontWeight="bold">
+          <Button.Text color="$gray12" fontSize={16} fontWeight="bold">
             FINISH EXERCISE
           </Button.Text>
         </Button>

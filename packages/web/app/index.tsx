@@ -66,7 +66,7 @@ function LoginView() {
         source={require("../assets/images/irondog-logo.png")}
         style={{ width: 128, height: 128, borderRadius: 64, marginBottom: 16 }}
       />
-      <Paragraph color="$gray10" fontSize={14} letterSpacing={1} mb={64}>
+      <Paragraph color="$gray11" fontSize={14} letterSpacing={1} mb={64}>
         Hypertrophy & Progressive Overload
       </Paragraph>
 
@@ -83,7 +83,7 @@ function LoginView() {
           gap="$2"
         >
           <Fontisto name="google" size={20} color="#4285F4" />
-          <Button.Text color="black" fontSize={16} fontWeight="600">
+          <Button.Text color="#1a1a1a" fontSize={16} fontWeight="600">
             Sign in with Google
           </Button.Text>
         </Button>
@@ -111,11 +111,11 @@ function HomeView() {
   return (
     <YStack flex={1} justify="center" items="center" p="$4" bg="$background">
       {user && (
-        <Paragraph color="$gray10" fontSize={16} mb="$2">
+        <Paragraph color="$gray11" fontSize={16} mb="$2">
           Hi, {user.name}
         </Paragraph>
       )}
-      <Paragraph color="$gray10" fontSize={14} letterSpacing={1} mb={64}>
+      <Paragraph color="$gray11" fontSize={14} letterSpacing={1} mb={64}>
         Hypertrophy & Progressive Overload
       </Paragraph>
 
@@ -137,7 +137,7 @@ function HomeView() {
         </H1>
       </Button>
 
-      <Paragraph color="$gray9" fontSize={14} mt={32}>
+      <Paragraph color="$gray11" fontSize={14} mt={32}>
         Tap to start today&apos;s workout
       </Paragraph>
     </YStack>
