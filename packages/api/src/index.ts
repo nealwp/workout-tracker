@@ -17,14 +17,12 @@ const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 app.use(
   cors({
-    origin(origin, callback) {
-      const allowed =
-        !origin ||
-        origin === "https://irondog.fit" ||
-        origin === "http://localhost:8081" ||
-        /^https:\/\/[\w-]+\.amplifyapp\.com$/.test(origin);
-      callback(null, allowed);
-    },
+    origin: [
+      "https://irondog.fit",
+      "https://www.irondog.fit",
+      "http://localhost:8081",
+      "http://127.0.0.1:8081",
+    ],
   })
 );
 app.use(express.json());
