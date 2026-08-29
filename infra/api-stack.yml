@@ -227,7 +227,9 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub "repo:${GithubOrg}/${GithubRepo}:*"
+                token.actions.githubusercontent.com:sub:
+                  - !Sub "repo:${GithubOrg}/${GithubRepo}:*"
+                  - !Sub "repo:${GithubOrg}@*/${GithubRepo}@*:*"
       Policies:
         - PolicyName: LambdaDeploy
           PolicyDocument:
