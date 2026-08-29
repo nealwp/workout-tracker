@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { signInWithGoogle, fetchMe, signOutServer } from "@/lib/api/client";
 import { tokenStore } from "@/lib/secureStore";
+import { API_BASE_URL } from "@/lib/config";
 
 export interface User {
   id: string;
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const res = await fetch("http://localhost:3001/auth/refresh", {
+      const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),

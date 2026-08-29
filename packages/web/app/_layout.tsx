@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { ActivityIndicator, Image, Pressable, useColorScheme } from "react-native";
+import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
 import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
 import { tamaguiConfig } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
-import "../lib/googleSignIn";
+
+if (Platform.OS !== "web") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require("../lib/googleSignIn");
+}
 
 function TopBar() {
   const { user, signOut } = useAuth();

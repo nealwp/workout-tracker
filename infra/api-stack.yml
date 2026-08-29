@@ -1,0 +1,265 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "IronDog API: DynamoDB, Lambda + Function URL, API Gateway HTTP API, custom domain"
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: api.irondog.fit
+  HostedZoneId:
+    Type: String
+    Description: Route53 hosted zone id for the domain (e.g. irondog.fit)
+  JwtSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+  GoogleWebClientId:
+    Type: String
+    NoEcho: true
+    Default: ""
+  GithubOrg:
+    Type: String
+    Description: GitHub org/owner for the CI OIDC trust policy
+    Default: ""
+  GithubRepo:
+    Type: String
+    Description: GitHub repo for the CI OIDC trust policy
+    Default: workout-tracker
+
+Resources:
+  # ---------- DynamoDB ----------
+  WorkoutsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: irondog-api
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: gsi1pk
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # ---------- Lambda ----------
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                Resource:
+                  - !GetAtt WorkoutsTable.Arn
+                  - !Sub "${WorkoutsTable.Arn}/*"
+      Tags:
+        - Key: app
+          Value: irondog
+
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: irondog-api
+      Handler: index.handler
+      Runtime: nodejs22.x
+      MemorySize: 512
+      Timeout: 15
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref WorkoutsTable
+          JWT_SECRET: !Ref JwtSecret
+          EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: !Ref GoogleWebClientId
+      Code:
+        ZipFile: |
+          exports.handler = async () => ({
+            statusCode: 200,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "ok", message: "stub" }),
+          });
+
+  ApiFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt ApiFunction.Arn
+      AuthType: NONE
+
+  FunctionUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunctionUrl
+      FunctionName: !Ref ApiFunction
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  # ---------- API Gateway HTTP API ----------
+  ApiGatewayApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: irondog-api
+      ProtocolType: HTTP
+
+  ApiGatewayIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: ANY
+      IntegrationUri: !GetAtt ApiFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  ApiGwInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ApiFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/*/*/*
+
+  ProxyRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      RouteKey: "ANY /{proxy+}"
+      Target: !Sub "integrations/${ApiGatewayIntegration}"
+
+  RootRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      RouteKey: "ANY /"
+      Target: !Sub "integrations/${ApiGatewayIntegration}"
+
+  ApiGatewayStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      StageName: $default
+      AutoDeploy: true
+
+  # ---------- Custom domain (api.irondog.fit) ----------
+  ApiCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+
+  ApiDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      DomainNameConfigurations:
+        - EndpointType: REGIONAL
+          CertificateArn: !Ref ApiCertificate
+          SecurityPolicy: TLS_1_2
+
+  ApiMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      DomainName: !Ref ApiDomain
+      ApiId: !Ref ApiGatewayApi
+      Stage: !Ref ApiGatewayStage
+
+  DnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: !GetAtt ApiDomain.RegionalHostedZoneId
+        DNSName: !GetAtt ApiDomain.RegionalDomainName
+
+  # ---------- GitHub Actions OIDC role ----------
+  GithubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+
+  GithubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GithubOidcProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GithubOrg}/${GithubRepo}:*"
+      Policies:
+        - PolicyName: LambdaDeploy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:UpdateFunctionCode
+                  - lambda:UpdateFunctionConfiguration
+                  - lambda:GetFunction
+                  - lambda:GetFunctionConfiguration
+                  - lambda:InvokeFunction
+                  - lambda:PublishVersion
+                  - lambda:UpdateAlias
+                  - lambda:GetAlias
+                Resource:
+                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:irondog-api"
+                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:irondog-api:*"
+
+Outputs:
+  FunctionName:
+    Value: !Ref ApiFunction
+  TableName:
+    Value: !Ref WorkoutsTable
+  LambdaRoleArn:
+    Value: !GetAtt LambdaExecutionRole.Arn
+  GithubActionsRoleArn:
+    Value: !GetAtt GithubActionsRole.Arn
+  FunctionUrl:
+    Value: !GetAtt ApiFunctionUrl.FunctionUrl
+  ApiGatewayEndpoint:
+    Value: !GetAtt ApiGatewayApi.ApiEndpoint
+  ApiUrl:
+    Description: Production HTTPS endpoint
+    Value: !Sub "https://${DomainName}"

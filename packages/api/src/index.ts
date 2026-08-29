@@ -4,19 +4,30 @@ import cors from "cors";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import type { Workout, ExerciseData, User, AuthPayload } from "@irondog/shared";
+import serverless from "serverless-http";
+import type { AuthPayload, ExerciseData } from "@irondog/shared";
+import { getStorage } from "./storage";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString("hex");
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "";
+const storage = getStorage();
+const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60;
 
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      const allowed =
+        !origin ||
+        origin === "https://irondog.fit" ||
+        origin === "http://localhost:8081" ||
+        /^https:\/\/[\w-]+\.amplifyapp\.com$/.test(origin);
+      callback(null, allowed);
+    },
+  })
+);
 app.use(express.json());
-
-const users: User[] = [];
-const workouts: Workout[] = [];
-const refreshTokens = new Map<string, string>();
 
 const jwksClientInstance = jwksClient({
   jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
@@ -81,6 +92,10 @@ declare global {
   }
 }
 
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.post("/auth/google", async (req, res) => {
   try {
     const { idToken } = req.body;
@@ -90,22 +105,10 @@ app.post("/auth/google", async (req, res) => {
     }
 
     const googleUser = await verifyGoogleToken(idToken);
-
-    let user = users.find((u) => u.googleId === googleUser.googleId);
-    if (!user) {
-      user = {
-        id: crypto.randomUUID(),
-        email: googleUser.email,
-        name: googleUser.name,
-        avatarUrl: googleUser.avatarUrl,
-        googleId: googleUser.googleId,
-        createdAt: new Date().toISOString(),
-      };
-      users.push(user);
-    }
+    const user = await storage.findOrCreateUser(googleUser);
 
     const tokens = signTokens({ userId: user.id, email: user.email });
-    refreshTokens.set(tokens.refreshToken, user.id);
+    await storage.saveRefreshToken(tokens.refreshToken, user.id, REFRESH_TOKEN_TTL_SECONDS);
 
     res.status(201).json({
       ...tokens,
@@ -116,35 +119,35 @@ app.post("/auth/google", async (req, res) => {
   }
 });
 
-app.post("/auth/refresh", (req, res) => {
+app.post("/auth/refresh", async (req, res) => {
   const { refreshToken } = req.body;
-  if (!refreshToken || !refreshTokens.has(refreshToken)) {
+  if (!refreshToken || !(await storage.hasRefreshToken(refreshToken))) {
     res.status(401).json({ error: "Invalid refresh token" });
     return;
   }
 
   try {
     const payload = jwt.verify(refreshToken, JWT_SECRET) as AuthPayload;
-    refreshTokens.delete(refreshToken);
+    await storage.deleteRefreshToken(refreshToken);
 
     const tokens = signTokens({ userId: payload.userId, email: payload.email });
-    refreshTokens.set(tokens.refreshToken, payload.userId);
+    await storage.saveRefreshToken(tokens.refreshToken, payload.userId, REFRESH_TOKEN_TTL_SECONDS);
 
     res.json(tokens);
   } catch {
-    refreshTokens.delete(refreshToken);
+    await storage.deleteRefreshToken(refreshToken).catch(() => {});
     res.status(401).json({ error: "Refresh token expired" });
   }
 });
 
-app.post("/auth/logout", (req, res) => {
+app.post("/auth/logout", async (req, res) => {
   const { refreshToken } = req.body;
-  if (refreshToken) refreshTokens.delete(refreshToken);
+  if (refreshToken) await storage.deleteRefreshToken(refreshToken);
   res.json({ success: true });
 });
 
-app.get("/auth/me", requireAuth, (req, res) => {
-  const user = users.find((u) => u.id === req.userId);
+app.get("/auth/me", requireAuth, async (req, res) => {
+  const user = await storage.findUserById(req.userId!);
   if (!user) {
     res.status(404).json({ error: "User not found" });
     return;
@@ -152,13 +155,14 @@ app.get("/auth/me", requireAuth, (req, res) => {
   res.json({ id: user.id, email: user.email, name: user.name, avatarUrl: user.avatarUrl });
 });
 
-app.get("/workouts", requireAuth, (req, res) => {
-  const userWorkouts = workouts.filter((w) => w.userId === req.userId);
+app.get("/workouts", requireAuth, async (req, res) => {
+  const userWorkouts = await storage.listWorkouts(req.userId!);
   res.json(userWorkouts);
 });
 
-app.get("/workouts/:id", requireAuth, (req, res) => {
-  const workout = workouts.find((w) => w.id === req.params.id && w.userId === req.userId);
+app.get("/workouts/:id", requireAuth, async (req, res) => {
+  const workoutId = req.params.id as string;
+  const workout = await storage.getWorkout(req.userId!, workoutId);
   if (!workout) {
     res.status(404).json({ error: "Workout not found" });
     return;
@@ -166,20 +170,15 @@ app.get("/workouts/:id", requireAuth, (req, res) => {
   res.json(workout);
 });
 
-app.post("/workouts", requireAuth, (req, res) => {
-  const workout: Workout = {
-    id: crypto.randomUUID(),
-    userId: req.userId!,
-    date: new Date().toISOString(),
-    exercises: [],
-  };
-  workouts.push(workout);
+app.post("/workouts", requireAuth, async (req, res) => {
+  const workout = await storage.createWorkout(req.userId!);
   res.status(201).json(workout);
 });
 
-app.post("/workouts/:id/exercises", requireAuth, (req, res) => {
-  const workout = workouts.find((w) => w.id === req.params.id && w.userId === req.userId);
-  if (!workout) {
+app.post("/workouts/:id/exercises", requireAuth, async (req, res) => {
+  const workoutId = req.params.id as string;
+  const existing = await storage.getWorkout(req.userId!, workoutId);
+  if (!existing) {
     res.status(404).json({ error: "Workout not found" });
     return;
   }
@@ -191,10 +190,14 @@ app.post("/workouts/:id/exercises", requireAuth, (req, res) => {
     sets: req.body.sets || [],
   };
 
-  workout.exercises.push(exercise);
-  res.status(201).json(exercise);
+  const saved = await storage.addExercise(req.userId!, workoutId, exercise);
+  res.status(201).json(saved);
 });
 
-app.listen(PORT, () => {
-  console.log(`API server running at http://localhost:${PORT}`);
-});
+export const handler = serverless(app);
+
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  app.listen(PORT, () => {
+    console.log(`API server running at http://localhost:${PORT}`);
+  });
+}
