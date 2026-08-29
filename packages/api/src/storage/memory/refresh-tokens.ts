@@ -22,3 +22,7 @@ export async function getRefreshToken(token: string): Promise<RefreshTokenRecord
 export async function deleteRefreshToken(token: string): Promise<void> {
   tokens.delete(hashRefreshToken(token));
 }
+
+export async function __resetForTests(): Promise<void> {
+  tokens.clear();
+}

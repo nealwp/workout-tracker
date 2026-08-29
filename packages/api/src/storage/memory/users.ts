@@ -52,3 +52,7 @@ export async function getUserByGoogleId(googleId: string): Promise<User | undefi
   const item = users.find((u) => u.googleId === googleId);
   return item ? toUser(item) : undefined;
 }
+
+export async function __resetForTests(): Promise<void> {
+  users.length = 0;
+}

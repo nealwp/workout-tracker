@@ -71,3 +71,7 @@ export async function deleteWorkout(userId: string, workoutKey: string): Promise
   const index = workouts.findIndex((w) => w.userId === userId && w.workoutKey === workoutKey);
   if (index >= 0) workouts.splice(index, 1);
 }
+
+export async function __resetForTests(): Promise<void> {
+  workouts.length = 0;
+}
