@@ -7,6 +7,7 @@ import jwksClient from "jwks-rsa";
 import serverless from "serverless-http";
 import type { AuthPayload, ExerciseData, Workout } from "@irondog/shared";
 import { getStorage, createWorkoutKey } from "./storage";
+import { logger } from "./logger";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -93,7 +94,8 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
     const payload = jwt.verify(header.slice(7), JWT_SECRET) as AuthPayload;
     req.userId = payload.userId;
     next();
-  } catch {
+  } catch (err) {
+    logger.warn("auth failed", { path: req.path, method: req.method }, err);
     res.status(401).json({ error: "Invalid or expired token" });
   }
 }
@@ -136,7 +138,8 @@ app.post("/auth/google", async (req, res) => {
       ...tokens,
       user: { id: user.id, email: user.email, name: user.name, avatarUrl: user.avatarUrl },
     });
-  } catch {
+  } catch (err) {
+    logger.error("google auth failed", { path: req.path }, err);
     res.status(401).json({ error: "Invalid Google token" });
   }
 });
@@ -160,8 +163,9 @@ app.post("/auth/refresh", async (req, res) => {
     );
 
     res.json(tokens);
-  } catch {
+  } catch (err) {
     await storage.deleteRefreshToken(refreshToken).catch(() => {});
+    logger.warn("refresh token expired or invalid", { path: req.path }, err);
     res.status(401).json({ error: "Refresh token expired" });
   }
 });
@@ -217,6 +221,11 @@ app.post("/workouts/:workoutKey/exercises", requireAuth, async (req, res) => {
   const savedWorkout: Workout = { ...workout, exercises: [...workout.exercises, exercise] };
   await storage.saveWorkout(savedWorkout);
   res.status(201).json(exercise);
+});
+
+app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  logger.error("unhandled route error", { path: req.path, method: req.method, userId: req.userId }, err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 export const handler = serverless(app);
