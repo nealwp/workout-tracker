@@ -16,7 +16,7 @@ let latestCtx: ReturnType<typeof useWorkout>;
 
 function TestConsumer() {
   latestCtx = useWorkout();
-  return <Text testID="workoutKey">{latestCtx.workoutKey ?? "null"}</Text>;
+  return <Text testID="workoutId">{latestCtx.workoutId ?? "null"}</Text>;
 }
 
 function renderProvider() {
@@ -33,18 +33,17 @@ describe("WorkoutContext", () => {
     latestCtx = undefined!;
   });
 
-  it("starts with null workoutKey and empty completedExercises", () => {
+  it("starts with null workoutId and empty completedExercises", () => {
     renderProvider();
 
-    expect(latestCtx.workoutKey).toBeNull();
+    expect(latestCtx.workoutId).toBeNull();
     expect(latestCtx.completedExercises).toEqual([]);
-    expect(screen.getByTestId("workoutKey").props.children).toBe("null");
+    expect(screen.getByTestId("workoutId").props.children).toBe("null");
   });
 
-  it("startWorkout sets workoutKey and clears completedExercises", async () => {
+  it("startWorkout sets workoutId and clears completedExercises", async () => {
     mockCreateWorkout.mockResolvedValue({
       id: "workout-123",
-      workoutKey: "2026-08-21T00:00:00.000Z#workout-123",
       date: "2026-08-21",
       exercises: [],
     });
@@ -55,18 +54,15 @@ describe("WorkoutContext", () => {
       await latestCtx.startWorkout();
     });
 
-    expect(latestCtx.workoutKey).toBe("2026-08-21T00:00:00.000Z#workout-123");
+    expect(latestCtx.workoutId).toBe("workout-123");
     expect(latestCtx.completedExercises).toEqual([]);
     expect(mockCreateWorkout).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId("workoutKey").props.children).toBe(
-      "2026-08-21T00:00:00.000Z#workout-123"
-    );
+    expect(screen.getByTestId("workoutId").props.children).toBe("workout-123");
   });
 
   it("finishExercise adds exercise to completedExercises and calls API", async () => {
     mockCreateWorkout.mockResolvedValue({
       id: "workout-456",
-      workoutKey: "2026-08-21T00:00:00.000Z#workout-456",
       date: "2026-08-21",
       exercises: [],
     });
@@ -95,7 +91,7 @@ describe("WorkoutContext", () => {
       sets,
     });
     expect(mockAddExerciseToWorkout).toHaveBeenCalledWith(
-      "2026-08-21T00:00:00.000Z#workout-456",
+      "workout-456",
       {
         id: "flat-bench-press",
         name: "Flat Bench Press",
@@ -105,7 +101,7 @@ describe("WorkoutContext", () => {
     );
   });
 
-  it("finishExercise does nothing if no workoutKey", async () => {
+  it("finishExercise does nothing if no workoutId", async () => {
     renderProvider();
 
     await act(async () => {
@@ -121,7 +117,6 @@ describe("WorkoutContext", () => {
   it("finishExercise does nothing if exerciseId is invalid", async () => {
     mockCreateWorkout.mockResolvedValue({
       id: "workout-789",
-      workoutKey: "2026-08-21T00:00:00.000Z#workout-789",
       date: "2026-08-21",
       exercises: [],
     });
@@ -145,7 +140,6 @@ describe("WorkoutContext", () => {
   it("accumulates multiple completed exercises", async () => {
     mockCreateWorkout.mockResolvedValue({
       id: "workout-abc",
-      workoutKey: "2026-08-21T00:00:00.000Z#workout-abc",
       date: "2026-08-21",
       exercises: [],
     });
@@ -177,7 +171,6 @@ describe("WorkoutContext", () => {
   it("resets state on new workout", async () => {
     mockCreateWorkout.mockResolvedValue({
       id: "workout-1",
-      workoutKey: "2026-08-21T00:00:00.000Z#workout-1",
       date: "2026-08-21",
       exercises: [],
     });
@@ -199,7 +192,6 @@ describe("WorkoutContext", () => {
 
     mockCreateWorkout.mockResolvedValue({
       id: "workout-2",
-      workoutKey: "2026-08-22T00:00:00.000Z#workout-2",
       date: "2026-08-22",
       exercises: [],
     });
@@ -208,7 +200,7 @@ describe("WorkoutContext", () => {
       await latestCtx.startWorkout();
     });
 
-    expect(latestCtx.workoutKey).toBe("2026-08-22T00:00:00.000Z#workout-2");
+    expect(latestCtx.workoutId).toBe("workout-2");
     expect(latestCtx.completedExercises).toEqual([]);
   });
 });

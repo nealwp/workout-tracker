@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import serverless from "serverless-http";
 import type { AuthPayload, ExerciseData, Workout } from "@irondog/shared";
-import { getStorage, createWorkoutKey } from "./storage";
+import { getStorage } from "./storage";
 import { logger } from "./logger";
 
 const app = express();
@@ -108,10 +108,6 @@ declare global {
   }
 }
 
-function withWorkoutKey(workout: Workout) {
-  return { ...workout, workoutKey: createWorkoutKey(workout.date, workout.id) };
-}
-
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
@@ -187,25 +183,25 @@ app.get("/auth/me", requireAuth, async (req, res) => {
 
 app.get("/workouts", requireAuth, async (req, res) => {
   const userWorkouts = await storage.listWorkouts(req.userId!);
-  res.json(userWorkouts.map(withWorkoutKey));
+  res.json(userWorkouts);
 });
 
-app.get("/workouts/:workoutKey", requireAuth, async (req, res) => {
-  const workout = await storage.getWorkout(req.userId!, req.params.workoutKey as string);
+app.get("/workouts/:id", requireAuth, async (req, res) => {
+  const workout = await storage.getWorkout(req.userId!, req.params.id as string);
   if (!workout) {
     res.status(404).json({ error: "Workout not found" });
     return;
   }
-  res.json(withWorkoutKey(workout));
+  res.json(workout);
 });
 
 app.post("/workouts", requireAuth, async (req, res) => {
   const workout = await storage.createWorkout(req.userId!);
-  res.status(201).json(withWorkoutKey(workout));
+  res.status(201).json(workout);
 });
 
-app.post("/workouts/:workoutKey/exercises", requireAuth, async (req, res) => {
-  const workout = await storage.getWorkout(req.userId!, req.params.workoutKey as string);
+app.post("/workouts/:id/exercises", requireAuth, async (req, res) => {
+  const workout = await storage.getWorkout(req.userId!, req.params.id as string);
   if (!workout) {
     res.status(404).json({ error: "Workout not found" });
     return;
