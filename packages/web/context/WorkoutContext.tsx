@@ -17,7 +17,7 @@ export interface CompletedExercise {
 }
 
 interface WorkoutContextType {
-  workoutId: string | null;
+  workoutKey: string | null;
   completedExercises: CompletedExercise[];
   startWorkout: () => Promise<void>;
   finishExercise: (exerciseId: string, sets: SetData[]) => Promise<void>;
@@ -26,22 +26,22 @@ interface WorkoutContextType {
 const WorkoutContext = createContext<WorkoutContextType | null>(null);
 
 export function WorkoutProvider({ children }: { children: ReactNode }) {
-  const [workoutId, setWorkoutId] = useState<string | null>(null);
+  const [workoutKey, setWorkoutKey] = useState<string | null>(null);
   const [completedExercises, setCompletedExercises] = useState<CompletedExercise[]>([]);
 
   const startWorkout = async () => {
     const workout = await createWorkout();
-    setWorkoutId(workout.id);
+    setWorkoutKey(workout.workoutKey);
     setCompletedExercises([]);
   };
 
   const finishExercise = async (exerciseId: string, sets: SetData[]) => {
-    if (!workoutId) return;
+    if (!workoutKey) return;
 
     const exercise = EXERCISES.find((e) => e.id === exerciseId);
     if (!exercise) return;
 
-    await addExerciseToWorkout(workoutId, {
+    await addExerciseToWorkout(workoutKey, {
       id: exercise.id,
       name: exercise.name,
       muscleGroup: exercise.muscleGroup,
@@ -60,7 +60,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <WorkoutContext.Provider value={{ workoutId, completedExercises, startWorkout, finishExercise }}>
+    <WorkoutContext.Provider value={{ workoutKey, completedExercises, startWorkout, finishExercise }}>
       {children}
     </WorkoutContext.Provider>
   );

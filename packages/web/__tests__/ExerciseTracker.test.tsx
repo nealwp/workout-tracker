@@ -25,7 +25,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockUseLocalSearchParams.mockReturnValue({ exerciseId: "flat-bench-press" });
   mockUseWorkout.mockReturnValue({
-    workoutId: "workout-123",
+    workoutKey: "workout-123",
     completedExercises: [],
     startWorkout: jest.fn(),
     finishExercise: mockFinishExercise,

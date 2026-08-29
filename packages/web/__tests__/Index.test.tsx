@@ -53,7 +53,7 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 beforeEach(() => {
   jest.clearAllMocks();
   mockUseWorkout.mockReturnValue({
-    workoutId: null,
+    workoutKey: null,
     completedExercises: [],
     startWorkout: mockStartWorkout,
     finishExercise: jest.fn(),

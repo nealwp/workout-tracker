@@ -95,10 +95,10 @@ export async function createWorkout() {
 }
 
 export async function addExerciseToWorkout(
-  workoutId: string,
+  workoutKey: string,
   exercise: ExerciseData
 ) {
-  const res = await authFetch(`/workouts/${workoutId}/exercises`, {
+  const res = await authFetch(`/workouts/${workoutKey}/exercises`, {
     method: "POST",
     body: JSON.stringify(exercise),
   });
