@@ -111,6 +111,9 @@ curl -fsS https://api.irondog.fit/health
   `AssumeRoleWithWebIdentity` `AccessDenied` event in CloudTrail (`aws cloudtrail
   lookup-events`). Only the numeric IDs are wildcarded above, so lookalike accounts still
   can't assume the role.
+- **`aws lambda invoke` fails with `Invalid base64`** — the AWS CLI v2 default binary mode
+  (`cli-binary-format base64`) expects payloads to be base64. Add
+  `--cli-binary-format raw-in-base64-out` so inline/file payloads are sent as raw bytes.
 
 ## Rotating `JwtSecret`
 
