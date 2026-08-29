@@ -26,6 +26,22 @@ app.use(
   })
 );
 app.use(express.json());
+// serverless-http 3.x fakes the request socket (readable:false, complete:true),
+// so on-finished reports the request "already finished" and Express 5's
+// express.json() skips parsing -- req.body stays the raw JSON string.
+// TODO: replace Express+serverless-http with Hono (@hono/aws-lambda) to
+// eliminate this class of bug.
+app.use((req, _res, next) => {
+  const raw = req.body;
+  if (typeof raw === "string" || Buffer.isBuffer(raw)) {
+    try {
+      req.body = JSON.parse(raw.toString());
+    } catch {
+      req.body = {};
+    }
+  }
+  next();
+});
 
 const jwksClientInstance = jwksClient({
   jwksUri: "https://www.googleapis.com/oauth2/v3/certs",

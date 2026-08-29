@@ -22,6 +22,9 @@ Expo SDK 54. Read the exact versioned docs at https://docs.expo.dev/versions/v54
 - **Navigation**: Expo Router v6 (file-based) with Stack navigator
 - **State**: React Context (`packages/web/context/WorkoutContext.tsx`)
 - **API**: Express 5.2.1 server on port 3001 (`packages/api/src/index.ts`)
+  - Runs under Lambda via `serverless-http` — note: has a body-parsing quirk under
+    Express 5 (see middleware comment in `src/index.ts`); **planned migration to Hono**
+    (`@hono/aws-lambda`) to eliminate the adapter's socket-mocking bugs
 - **Icons**: `@expo/vector-icons`
 - **Types**: Shared via `@irondog/shared` package
 
