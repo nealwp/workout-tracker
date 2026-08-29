@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button, H1, H2, Input, Separator, ScrollView, XStack, YStack } from "tamagui";
 import { EXERCISES } from "@/data/exercises";
@@ -11,6 +11,14 @@ interface Set {
   failure: boolean;
 }
 
+const REST_SECONDS = 60;
+
+const formatRestTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
+
 export default function ExerciseTracker() {
   const { exerciseId } = useLocalSearchParams<{ exerciseId: string }>();
   const router = useRouter();
@@ -22,6 +30,19 @@ export default function ExerciseTracker() {
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [failure, setFailure] = useState(false);
+  const [restRemaining, setRestRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (restRemaining === null || restRemaining <= 0) return;
+    const id = setTimeout(() => {
+      setRestRemaining((prev) => (prev === null ? prev : Math.max(0, prev - 1)));
+    }, 1000);
+    return () => clearTimeout(id);
+  }, [restRemaining]);
+
+  const handleStartRest = () => {
+    setRestRemaining(REST_SECONDS);
+  };
 
   const currentSetNumber = sets.length + 1;
 
@@ -84,6 +105,22 @@ export default function ExerciseTracker() {
   return (
     <ScrollView flex={1} bg="$background">
       <YStack p="$4" gap="$4">
+        <Button
+          onPress={() => router.back()}
+          bg="$gray4"
+          borderWidth={1}
+          borderColor="$gray6"
+          px="$4"
+          py="$2"
+          rounded="$4"
+          pressStyle={{ opacity: 0.8 }}
+          style={{ alignSelf: "flex-end" }}
+        >
+          <Button.Text color="$gray12" fontSize={14} fontWeight="600">
+            Cancel
+          </Button.Text>
+        </Button>
+
         <YStack gap="$2">
           <H1 color="$color" fontSize={24} fontWeight="bold">
             {exercise.name}
@@ -152,6 +189,29 @@ export default function ExerciseTracker() {
         >
           <Button.Text color="white" fontSize={16} fontWeight="bold">
             LOG SET
+          </Button.Text>
+        </Button>
+
+        <Button
+          onPress={handleStartRest}
+          bg="$gray4"
+          borderWidth={1}
+          borderColor={restRemaining === null || restRemaining === 0 ? "$gray6" : "$red9"}
+          px="$4"
+          py="$3"
+          rounded="$4"
+          pressStyle={{ opacity: 0.8 }}
+        >
+          <Button.Text
+            color={restRemaining === null || restRemaining === 0 ? "$gray12" : "$red10"}
+            fontSize={16}
+            fontWeight="600"
+          >
+            {restRemaining === null
+              ? `REST ${formatRestTime(REST_SECONDS)}`
+              : restRemaining === 0
+                ? "REST DONE ✓"
+                : `REST ${formatRestTime(restRemaining)}`}
           </Button.Text>
         </Button>
 
