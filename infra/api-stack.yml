@@ -56,13 +56,24 @@ Resources:
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
-        - AttributeName: workoutKey
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: date
           AttributeType: S
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
-        - AttributeName: workoutKey
+        - AttributeName: id
           KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: date-index
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+            - AttributeName: date
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
 
   RefreshTokensTable:
     Type: AWS::DynamoDB::Table
@@ -109,6 +120,7 @@ Resources:
                   - !Sub "${UsersTable.Arn}/index/*"
                   - !GetAtt WorkoutsTable.Arn
                   - !Sub "${WorkoutsTable.Arn}/*"
+                  - !Sub "${WorkoutsTable.Arn}/index/*"
                   - !GetAtt RefreshTokensTable.Arn
                   - !Sub "${RefreshTokensTable.Arn}/*"
       Tags:

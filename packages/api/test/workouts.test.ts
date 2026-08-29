@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 import type { Workout } from "@irondog/shared";
 import {
   createWorkout,
-  createWorkoutKey,
   getWorkout,
   listWorkouts,
   saveWorkout,
@@ -42,21 +41,20 @@ describe("memory workouts", () => {
       },
     ]);
     await saveWorkout(workout);
-    const found = await getWorkout("user-1", createWorkoutKey(workout.date, workout.id));
+    const found = await getWorkout("user-1", "w-1");
     assert.equal(found?.exercises[0].name, "Lat Pulldown");
     assert.deepEqual(found?.exercises[0].sets, [{ id: 1, weight: 120, reps: 10, failure: false }]);
   });
 
-  it("gets a workout by key", async () => {
+  it("gets a workout by id", async () => {
     const workout = craftWorkout("user-1", "w-1", "2026-08-29T10:00:00.000Z");
     await saveWorkout(workout);
-    const key = createWorkoutKey(workout.date, workout.id);
-    const found = await getWorkout("user-1", key);
+    const found = await getWorkout("user-1", "w-1");
     assert.equal(found?.id, "w-1");
   });
 
   it("returns undefined for a missing workout", async () => {
-    const found = await getWorkout("user-1", "missing#key");
+    const found = await getWorkout("user-1", "missing-workout");
     assert.equal(found, undefined);
   });
 
@@ -76,16 +74,14 @@ describe("memory workouts", () => {
     assert.deepEqual(ids, ["new", "mid", "old"]);
   });
 
-  it("handles two workouts created at the same date/timestamp without key collisions", async () => {
+  it("handles two workouts created at the same date/timestamp", async () => {
     const date = "2026-08-29T19:34:15.127Z";
     const a = craftWorkout("user-1", "w-a", date);
     const b = craftWorkout("user-1", "w-b", date);
     await saveWorkout(a);
     await saveWorkout(b);
-    assert.equal(createWorkoutKey(date, a.id), `${date}#w-a`);
-    assert.equal(createWorkoutKey(date, b.id), `${date}#w-b`);
-    const foundA = await getWorkout("user-1", createWorkoutKey(date, a.id));
-    const foundB = await getWorkout("user-1", createWorkoutKey(date, b.id));
+    const foundA = await getWorkout("user-1", a.id);
+    const foundB = await getWorkout("user-1", b.id);
     assert.equal(foundA?.id, "w-a");
     assert.equal(foundB?.id, "w-b");
     assert.equal((await listWorkouts("user-1")).length, 2);
@@ -98,14 +94,13 @@ describe("memory workouts", () => {
       { id: "squat", name: "Squat", muscleGroup: "legs", sets: [] },
     ]);
     await saveWorkout(updated);
-    const found = await getWorkout("user-1", createWorkoutKey(workout.date, workout.id));
+    const found = await getWorkout("user-1", "w-1");
     assert.deepEqual(found, updated);
   });
 
   it("deletes a workout", async () => {
     await saveWorkout(craftWorkout("user-1", "w-1", "2026-08-29T10:00:00.000Z"));
-    const key = createWorkoutKey("2026-08-29T10:00:00.000Z", "w-1");
-    await deleteWorkout("user-1", key);
-    assert.equal(await getWorkout("user-1", key), undefined);
+    await deleteWorkout("user-1", "w-1");
+    assert.equal(await getWorkout("user-1", "w-1"), undefined);
   });
 });

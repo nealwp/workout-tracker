@@ -3,7 +3,6 @@ import type { Workout, ExerciseData } from "@irondog/shared";
 
 export interface WorkoutRecord {
   userId: string;
-  workoutKey: string;
   id: string;
   date: string;
   exercises: ExerciseData[];
@@ -11,14 +10,9 @@ export interface WorkoutRecord {
 
 const workouts: WorkoutRecord[] = [];
 
-export function createWorkoutKey(date: string, id: string): string {
-  return `${date}#${id}`;
-}
-
 function toRecord(workout: Workout): WorkoutRecord {
   return {
     userId: workout.userId,
-    workoutKey: createWorkoutKey(workout.date, workout.id),
     id: workout.id,
     date: workout.date,
     exercises: workout.exercises,
@@ -47,9 +41,9 @@ export async function createWorkout(userId: string): Promise<Workout> {
 
 export async function getWorkout(
   userId: string,
-  workoutKey: string
+  workoutId: string
 ): Promise<Workout | undefined> {
-  const item = workouts.find((w) => w.userId === userId && w.workoutKey === workoutKey);
+  const item = workouts.find((w) => w.userId === userId && w.id === workoutId);
   return item ? toWorkout(item) : undefined;
 }
 
@@ -62,13 +56,15 @@ export async function listWorkouts(userId: string): Promise<Workout[]> {
 
 export async function saveWorkout(workout: Workout): Promise<void> {
   const record = toRecord(workout);
-  const index = workouts.findIndex((w) => w.workoutKey === record.workoutKey);
+  const index = workouts.findIndex(
+    (w) => w.userId === record.userId && w.id === record.id
+  );
   if (index >= 0) workouts[index] = record;
   else workouts.push(record);
 }
 
-export async function deleteWorkout(userId: string, workoutKey: string): Promise<void> {
-  const index = workouts.findIndex((w) => w.userId === userId && w.workoutKey === workoutKey);
+export async function deleteWorkout(userId: string, workoutId: string): Promise<void> {
+  const index = workouts.findIndex((w) => w.userId === userId && w.id === workoutId);
   if (index >= 0) workouts.splice(index, 1);
 }
 

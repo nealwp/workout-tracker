@@ -52,4 +52,3 @@ export function getStorage(): Storage {
 }
 
 export type { Storage } from "./types";
-export { createWorkoutKey } from "./dynamodb/workouts";

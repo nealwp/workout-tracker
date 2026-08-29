@@ -18,10 +18,10 @@ export interface Storage {
   getUserById(userId: string): Promise<User | undefined>;
   getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createWorkout(userId: string): Promise<Workout>;
-  getWorkout(userId: string, workoutKey: string): Promise<Workout | undefined>;
+  getWorkout(userId: string, workoutId: string): Promise<Workout | undefined>;
   listWorkouts(userId: string): Promise<Workout[]>;
   saveWorkout(workout: Workout): Promise<void>;
-  deleteWorkout(userId: string, workoutKey: string): Promise<void>;
+  deleteWorkout(userId: string, workoutId: string): Promise<void>;
   storeRefreshToken(token: string, userId: string, expiresAt: number): Promise<void>;
   getRefreshToken(token: string): Promise<RefreshTokenRecord | undefined>;
   deleteRefreshToken(token: string): Promise<void>;

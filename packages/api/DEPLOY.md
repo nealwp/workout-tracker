@@ -58,6 +58,36 @@ Set the returned full ARN as a **repository secret** `AWS_ROLE_ARN`
 (Settings → Secrets and variables → Actions). `.github/workflows/deploy-api.yml` uses it
 with GitHub OIDC to push the bundle and smoke-test `/health`.
 
+## Schema change: id key + `date-index` GSI
+
+`irondog-workouts` was re-keyed from `userId` + `workoutKey` (`date#id`) to
+`userId` + `id`, with a new GSI `date-index` (`userId` + `date`) powering
+chronological `listWorkouts`. The old key embedded a `#` in the URL, which the
+browser treated as a fragment and caused 404s on `POST /workouts/:id/exercises`.
+
+`KeySchema` is immutable, so applying this via CloudFormation **replaces the
+`irondog-workouts` table and drops all existing rows**. Deploy from the repo root,
+re-supplying every parameter (unspecified params revert to template defaults and
+would blank `JwtSecret`/`GoogleWebClientId`):
+
+```bash
+aws cloudformation deploy \
+  --region us-west-2 \
+  --template-file infra/api-stack.yml \
+  --stack-name irondog-api \
+  --profile=<aws-profile> \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --parameter-overrides \
+    DomainName=api.irondog.fit \
+    HostedZoneId=<hosted-zone-id> \
+    JwtSecret=<jwt-secret> \
+    GoogleWebClientId=<google-web-client-id> \
+    GithubOrg=<github-owner> \
+    GithubRepo=workout-tracker
+```
+
+After the stack update, push to `main` so CI bundles the new id-based storage code.
+
 ## Updating the Lambda code
 
 CI does this automatically on push to `main` (built with esbuild, zip =

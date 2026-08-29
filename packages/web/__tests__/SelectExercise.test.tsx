@@ -27,7 +27,7 @@ const mockUseWorkout = useWorkout as jest.MockedFunction<typeof useWorkout>;
 beforeEach(() => {
   jest.clearAllMocks();
   mockUseWorkout.mockReturnValue({
-    workoutKey: "workout-123",
+    workoutId: "workout-123",
     completedExercises: [],
     startWorkout: jest.fn(),
     finishExercise: jest.fn(),
@@ -86,7 +86,7 @@ describe("SelectExercise Screen", () => {
 
   it("shows completed exercises when available", () => {
     mockUseWorkout.mockReturnValue({
-      workoutKey: "workout-123",
+      workoutId: "workout-123",
       completedExercises: [
         {
           id: "flat-bench-press",
