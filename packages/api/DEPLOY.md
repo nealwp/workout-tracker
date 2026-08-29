@@ -8,7 +8,7 @@ configured for your account under an explicit profile.
 
 Managed by the CloudFormation stack `irondog-api` (`infra/api-stack.yml` at the repo root):
 
-- **DynamoDB** — table `irondog-api`, `PAY_PER_REQUEST`
+- **DynamoDB** — tables `irondog-users`, `irondog-workouts`, `irondog-refresh-tokens`, all `PAY_PER_REQUEST`
 - **Lambda** — function `irondog-api`, `nodejs22.x`, 512MB, 15s timeout
 - **API Gateway HTTP API** — `$default` stage, routes `ANY /` and `ANY /{proxy+}`, payload v2.0
 - **Custom domain** — `api.irondog.fit`: ACM cert (DNS-validated) + Route53 alias record
