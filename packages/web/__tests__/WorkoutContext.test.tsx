@@ -16,7 +16,7 @@ let latestCtx: ReturnType<typeof useWorkout>;
 
 function TestConsumer() {
   latestCtx = useWorkout();
-  return <Text testID="workoutId">{latestCtx.workoutId ?? "null"}</Text>;
+  return <Text testID="workoutKey">{latestCtx.workoutKey ?? "null"}</Text>;
 }
 
 function renderProvider() {
@@ -33,16 +33,21 @@ describe("WorkoutContext", () => {
     latestCtx = undefined!;
   });
 
-  it("starts with null workoutId and empty completedExercises", () => {
+  it("starts with null workoutKey and empty completedExercises", () => {
     renderProvider();
 
-    expect(latestCtx.workoutId).toBeNull();
+    expect(latestCtx.workoutKey).toBeNull();
     expect(latestCtx.completedExercises).toEqual([]);
-    expect(screen.getByTestId("workoutId").props.children).toBe("null");
+    expect(screen.getByTestId("workoutKey").props.children).toBe("null");
   });
 
-  it("startWorkout sets workoutId and clears completedExercises", async () => {
-    mockCreateWorkout.mockResolvedValue({ id: "workout-123", date: "2026-08-21", exercises: [] });
+  it("startWorkout sets workoutKey and clears completedExercises", async () => {
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-123",
+      workoutKey: "2026-08-21T00:00:00.000Z#workout-123",
+      date: "2026-08-21",
+      exercises: [],
+    });
 
     renderProvider();
 
@@ -50,14 +55,21 @@ describe("WorkoutContext", () => {
       await latestCtx.startWorkout();
     });
 
-    expect(latestCtx.workoutId).toBe("workout-123");
+    expect(latestCtx.workoutKey).toBe("2026-08-21T00:00:00.000Z#workout-123");
     expect(latestCtx.completedExercises).toEqual([]);
     expect(mockCreateWorkout).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId("workoutId").props.children).toBe("workout-123");
+    expect(screen.getByTestId("workoutKey").props.children).toBe(
+      "2026-08-21T00:00:00.000Z#workout-123"
+    );
   });
 
   it("finishExercise adds exercise to completedExercises and calls API", async () => {
-    mockCreateWorkout.mockResolvedValue({ id: "workout-456", date: "2026-08-21", exercises: [] });
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-456",
+      workoutKey: "2026-08-21T00:00:00.000Z#workout-456",
+      date: "2026-08-21",
+      exercises: [],
+    });
     mockAddExerciseToWorkout.mockResolvedValue({});
 
     renderProvider();
@@ -82,15 +94,18 @@ describe("WorkoutContext", () => {
       muscleGroup: "chest",
       sets,
     });
-    expect(mockAddExerciseToWorkout).toHaveBeenCalledWith("workout-456", {
-      id: "flat-bench-press",
-      name: "Flat Bench Press",
-      muscleGroup: "chest",
-      sets,
-    });
+    expect(mockAddExerciseToWorkout).toHaveBeenCalledWith(
+      "2026-08-21T00:00:00.000Z#workout-456",
+      {
+        id: "flat-bench-press",
+        name: "Flat Bench Press",
+        muscleGroup: "chest",
+        sets,
+      }
+    );
   });
 
-  it("finishExercise does nothing if no workoutId", async () => {
+  it("finishExercise does nothing if no workoutKey", async () => {
     renderProvider();
 
     await act(async () => {
@@ -104,7 +119,12 @@ describe("WorkoutContext", () => {
   });
 
   it("finishExercise does nothing if exerciseId is invalid", async () => {
-    mockCreateWorkout.mockResolvedValue({ id: "workout-789", date: "2026-08-21", exercises: [] });
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-789",
+      workoutKey: "2026-08-21T00:00:00.000Z#workout-789",
+      date: "2026-08-21",
+      exercises: [],
+    });
 
     renderProvider();
 
@@ -123,7 +143,12 @@ describe("WorkoutContext", () => {
   });
 
   it("accumulates multiple completed exercises", async () => {
-    mockCreateWorkout.mockResolvedValue({ id: "workout-abc", date: "2026-08-21", exercises: [] });
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-abc",
+      workoutKey: "2026-08-21T00:00:00.000Z#workout-abc",
+      date: "2026-08-21",
+      exercises: [],
+    });
     mockAddExerciseToWorkout.mockResolvedValue({});
 
     renderProvider();
@@ -150,7 +175,12 @@ describe("WorkoutContext", () => {
   });
 
   it("resets state on new workout", async () => {
-    mockCreateWorkout.mockResolvedValue({ id: "workout-1", date: "2026-08-21", exercises: [] });
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-1",
+      workoutKey: "2026-08-21T00:00:00.000Z#workout-1",
+      date: "2026-08-21",
+      exercises: [],
+    });
     mockAddExerciseToWorkout.mockResolvedValue({});
 
     renderProvider();
@@ -167,13 +197,18 @@ describe("WorkoutContext", () => {
 
     expect(latestCtx.completedExercises).toHaveLength(1);
 
-    mockCreateWorkout.mockResolvedValue({ id: "workout-2", date: "2026-08-22", exercises: [] });
+    mockCreateWorkout.mockResolvedValue({
+      id: "workout-2",
+      workoutKey: "2026-08-22T00:00:00.000Z#workout-2",
+      date: "2026-08-22",
+      exercises: [],
+    });
 
     await act(async () => {
       await latestCtx.startWorkout();
     });
 
-    expect(latestCtx.workoutId).toBe("workout-2");
+    expect(latestCtx.workoutKey).toBe("2026-08-22T00:00:00.000Z#workout-2");
     expect(latestCtx.completedExercises).toEqual([]);
   });
 });

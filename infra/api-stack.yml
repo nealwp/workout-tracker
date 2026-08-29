@@ -27,32 +27,56 @@ Parameters:
 
 Resources:
   # ---------- DynamoDB ----------
-  WorkoutsTable:
+  UsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: irondog-api
+      TableName: irondog-users
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: pk
+        - AttributeName: id
           AttributeType: S
-        - AttributeName: sk
-          AttributeType: S
-        - AttributeName: gsi1pk
+        - AttributeName: googleId
           AttributeType: S
       KeySchema:
-        - AttributeName: pk
+        - AttributeName: id
           KeyType: HASH
-        - AttributeName: sk
-          KeyType: RANGE
       GlobalSecondaryIndexes:
-        - IndexName: GSI1
+        - IndexName: googleId-index
           KeySchema:
-            - AttributeName: gsi1pk
+            - AttributeName: googleId
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+
+  WorkoutsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: irondog-workouts
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: workoutKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: workoutKey
+          KeyType: RANGE
+
+  RefreshTokensTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: irondog-refresh-tokens
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: tokenHash
+          AttributeType: S
+      KeySchema:
+        - AttributeName: tokenHash
+          KeyType: HASH
       TimeToLiveSpecification:
-        AttributeName: ttl
+        AttributeName: expiresAt
         Enabled: true
 
   # ---------- Lambda ----------
@@ -80,8 +104,13 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:Query
                 Resource:
+                  - !GetAtt UsersTable.Arn
+                  - !Sub "${UsersTable.Arn}/*"
+                  - !Sub "${UsersTable.Arn}/index/*"
                   - !GetAtt WorkoutsTable.Arn
                   - !Sub "${WorkoutsTable.Arn}/*"
+                  - !GetAtt RefreshTokensTable.Arn
+                  - !Sub "${RefreshTokensTable.Arn}/*"
       Tags:
         - Key: app
           Value: irondog
@@ -97,7 +126,6 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Environment:
         Variables:
-          DYNAMODB_TABLE: !Ref WorkoutsTable
           JWT_SECRET: !Ref JwtSecret
           EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: !Ref GoogleWebClientId
       Code:
@@ -252,8 +280,12 @@ Resources:
 Outputs:
   FunctionName:
     Value: !Ref ApiFunction
-  TableName:
+  UsersTableName:
+    Value: !Ref UsersTable
+  WorkoutsTableName:
     Value: !Ref WorkoutsTable
+  RefreshTokensTableName:
+    Value: !Ref RefreshTokensTable
   LambdaRoleArn:
     Value: !GetAtt LambdaExecutionRole.Arn
   GithubActionsRoleArn:

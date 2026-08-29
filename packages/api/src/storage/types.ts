@@ -1,4 +1,4 @@
-import type { User, Workout, ExerciseData } from "@irondog/shared";
+import type { User, Workout } from "@irondog/shared";
 
 export interface GoogleUserInfo {
   googleId: string;
@@ -7,18 +7,22 @@ export interface GoogleUserInfo {
   avatarUrl: string | null;
 }
 
+export interface RefreshTokenRecord {
+  tokenHash: string;
+  userId: string;
+  expiresAt: number;
+}
+
 export interface Storage {
   findOrCreateUser(info: GoogleUserInfo): Promise<User>;
-  findUserById(userId: string): Promise<User | undefined>;
-  listWorkouts(userId: string): Promise<Workout[]>;
-  getWorkout(userId: string, workoutId: string): Promise<Workout | undefined>;
+  getUserById(userId: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createWorkout(userId: string): Promise<Workout>;
-  addExercise(
-    userId: string,
-    workoutId: string,
-    exercise: ExerciseData
-  ): Promise<ExerciseData>;
-  saveRefreshToken(refreshToken: string, userId: string, ttlSeconds: number): Promise<void>;
-  hasRefreshToken(refreshToken: string): Promise<boolean>;
-  deleteRefreshToken(refreshToken: string): Promise<void>;
+  getWorkout(userId: string, workoutKey: string): Promise<Workout | undefined>;
+  listWorkouts(userId: string): Promise<Workout[]>;
+  saveWorkout(workout: Workout): Promise<void>;
+  deleteWorkout(userId: string, workoutKey: string): Promise<void>;
+  storeRefreshToken(token: string, userId: string, expiresAt: number): Promise<void>;
+  getRefreshToken(token: string): Promise<RefreshTokenRecord | undefined>;
+  deleteRefreshToken(token: string): Promise<void>;
 }

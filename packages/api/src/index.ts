@@ -5,8 +5,8 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import serverless from "serverless-http";
-import type { AuthPayload, ExerciseData } from "@irondog/shared";
-import { getStorage } from "./storage";
+import type { AuthPayload, ExerciseData, Workout } from "@irondog/shared";
+import { getStorage, createWorkoutKey } from "./storage";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -106,6 +106,10 @@ declare global {
   }
 }
 
+function withWorkoutKey(workout: Workout) {
+  return { ...workout, workoutKey: createWorkoutKey(workout.date, workout.id) };
+}
+
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
@@ -122,7 +126,11 @@ app.post("/auth/google", async (req, res) => {
     const user = await storage.findOrCreateUser(googleUser);
 
     const tokens = signTokens({ userId: user.id, email: user.email });
-    await storage.saveRefreshToken(tokens.refreshToken, user.id, REFRESH_TOKEN_TTL_SECONDS);
+    await storage.storeRefreshToken(
+      tokens.refreshToken,
+      user.id,
+      Math.floor(Date.now() / 1000) + REFRESH_TOKEN_TTL_SECONDS
+    );
 
     res.status(201).json({
       ...tokens,
@@ -135,7 +143,7 @@ app.post("/auth/google", async (req, res) => {
 
 app.post("/auth/refresh", async (req, res) => {
   const { refreshToken } = req.body;
-  if (!refreshToken || !(await storage.hasRefreshToken(refreshToken))) {
+  if (!refreshToken || !(await storage.getRefreshToken(refreshToken))) {
     res.status(401).json({ error: "Invalid refresh token" });
     return;
   }
@@ -145,7 +153,11 @@ app.post("/auth/refresh", async (req, res) => {
     await storage.deleteRefreshToken(refreshToken);
 
     const tokens = signTokens({ userId: payload.userId, email: payload.email });
-    await storage.saveRefreshToken(tokens.refreshToken, payload.userId, REFRESH_TOKEN_TTL_SECONDS);
+    await storage.storeRefreshToken(
+      tokens.refreshToken,
+      payload.userId,
+      Math.floor(Date.now() / 1000) + REFRESH_TOKEN_TTL_SECONDS
+    );
 
     res.json(tokens);
   } catch {
@@ -161,7 +173,7 @@ app.post("/auth/logout", async (req, res) => {
 });
 
 app.get("/auth/me", requireAuth, async (req, res) => {
-  const user = await storage.findUserById(req.userId!);
+  const user = await storage.getUserById(req.userId!);
   if (!user) {
     res.status(404).json({ error: "User not found" });
     return;
@@ -171,28 +183,26 @@ app.get("/auth/me", requireAuth, async (req, res) => {
 
 app.get("/workouts", requireAuth, async (req, res) => {
   const userWorkouts = await storage.listWorkouts(req.userId!);
-  res.json(userWorkouts);
+  res.json(userWorkouts.map(withWorkoutKey));
 });
 
-app.get("/workouts/:id", requireAuth, async (req, res) => {
-  const workoutId = req.params.id as string;
-  const workout = await storage.getWorkout(req.userId!, workoutId);
+app.get("/workouts/:workoutKey", requireAuth, async (req, res) => {
+  const workout = await storage.getWorkout(req.userId!, req.params.workoutKey as string);
   if (!workout) {
     res.status(404).json({ error: "Workout not found" });
     return;
   }
-  res.json(workout);
+  res.json(withWorkoutKey(workout));
 });
 
 app.post("/workouts", requireAuth, async (req, res) => {
   const workout = await storage.createWorkout(req.userId!);
-  res.status(201).json(workout);
+  res.status(201).json(withWorkoutKey(workout));
 });
 
-app.post("/workouts/:id/exercises", requireAuth, async (req, res) => {
-  const workoutId = req.params.id as string;
-  const existing = await storage.getWorkout(req.userId!, workoutId);
-  if (!existing) {
+app.post("/workouts/:workoutKey/exercises", requireAuth, async (req, res) => {
+  const workout = await storage.getWorkout(req.userId!, req.params.workoutKey as string);
+  if (!workout) {
     res.status(404).json({ error: "Workout not found" });
     return;
   }
@@ -204,8 +214,9 @@ app.post("/workouts/:id/exercises", requireAuth, async (req, res) => {
     sets: req.body.sets || [],
   };
 
-  const saved = await storage.addExercise(req.userId!, workoutId, exercise);
-  res.status(201).json(saved);
+  const savedWorkout: Workout = { ...workout, exercises: [...workout.exercises, exercise] };
+  await storage.saveWorkout(savedWorkout);
+  res.status(201).json(exercise);
 });
 
 export const handler = serverless(app);
