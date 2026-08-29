@@ -97,6 +97,20 @@ curl -fsS https://api.irondog.fit/health
   Always pass `--region us-west-2 --profile=<aws-profile>` together.
 - **Invalid default-profile creds** (`InvalidClientTokenId`) — the default AWS profile was
   stale; use `--profile=<aws-profile>` explicitly on every command.
+- **GitHub OIDC denied after an `AssumeRoleWithWebIdentity` error** — GitHub changed its
+  OIDC `sub` claim format from `repo:<owner>/<repo>:ref:<ref>` to
+  `repo:<owner>@<ownerId>/<repo>@<repoId>:ref:<ref>`, which breaks the classic trust
+  condition `repo:<owner>/<repo>:*`. The trust policy must accept both, e.g.:
+  ```yaml
+  StringLike:
+    token.actions.githubusercontent.com:sub:
+      - "repo:<owner>/<repo>:*"
+      - "repo:<owner>@*/<repo>@*:*"
+  ```
+  To see the exact denied claim, read the `userName`/`principalId` field of the
+  `AssumeRoleWithWebIdentity` `AccessDenied` event in CloudTrail (`aws cloudtrail
+  lookup-events`). Only the numeric IDs are wildcarded above, so lookalike accounts still
+  can't assume the role.
 
 ## Rotating `JwtSecret`
 
