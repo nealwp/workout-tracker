@@ -124,9 +124,14 @@ packages/
         index.ts                  # Re-exports all types
       index.ts                    # Main entry point
   
-  api/                            # Express REST API
+  api/                            # Express REST API (serverless)
     src/
-      index.ts                    # Express app with routes
+      index.ts                    # Express app, storage-backed routes, Lambda handler
+      storage/
+        types.ts                  # Storage interface
+        memory.ts                 # In-memory impl (local dev + tests)
+        dynamodb.ts               # DynamoDB impl (Lambda/prod)
+        index.ts                  # Storage selector
     .env.example                  # Environment variables template
     package.json
     tsconfig.json
@@ -156,8 +161,11 @@ packages/
 .github/
   workflows/
     ci.yml                        # Lint, test, build on PR/push
-    deploy-api.yml                # Deploy API to AWS Beanstalk
+    deploy-api.yml                # Deploy API to AWS Lambda
     deploy-web.yml                # Validate web build (Amplify deploys via amplify.yml)
+
+infra/
+  api-stack.yml                   # CloudFormation: DynamoDB, Lambda, API Gateway, OIDC role
 ```
 
 ## Conventions
@@ -167,7 +175,7 @@ packages/
 - Tamagui shorthands only (`bg` not `backgroundColor`, `p` not `padding`)
 - All screen components default-exported
 - API calls use native `fetch` (no axios)
-- Express server uses in-memory storage (MVP - database TBD)
+- API storage: in-memory for local dev/tests, DynamoDB on Lambda (`AWS_LAMBDA_FUNCTION_NAME` or `STORAGE=dynamodb`)
 - UUIDs via `crypto.randomUUID()`
 
 ## Deployment
@@ -179,16 +187,18 @@ packages/
 
 ### Production URLs (Coming Soon)
 - **Web**: https://irondog.fit (AWS Amplify)
-- **API**: https://api.irondog.fit (AWS Elastic Beanstalk)
+- **API**: https://api.irondog.fit (AWS Lambda + API Gateway)
 
 ### CI/CD Pipeline
 - Push to `main` triggers deployments
 - Path filters: only deploy changed packages
-- API workflow: build → package → deploy to Beanstalk
+- API workflow: build → esbuild bundle → `update-function-code` on AWS Lambda
 - Web workflow: validate build in CI; AWS Amplify deploys using the committed `amplify.yml` build spec (repo root, serves `packages/web/dist`)
+- API infra managed by CloudFormation stack `irondog-api` (`infra/api-stack.yml`): DynamoDB table `irondog-api`, Lambda fn `irondog-api` (nodejs22.x, 512MB), Lambda Function URL, API Gateway HTTP API behind `api.irondog.fit`
 
 ### Environment Variables
-- **API**: `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `JWT_SECRET`, `PORT`, `NODE_ENV`
+- **API (Lambda env)**: `JWT_SECRET`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `DYNAMODB_TABLE`
 - **Web**: `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
+- **CI (GitHub secrets)**: `AWS_ROLE_ARN` (OIDC role for Lambda deploys)
 
 See `.env.example` files in each package.

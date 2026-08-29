@@ -84,11 +84,11 @@ Currently: **62 tests passing** ✅
 
 ### Production URLs
 - **Web**: https://irondog.fit (AWS Amplify) - _Coming soon_
-- **API**: https://api.irondog.fit (AWS Elastic Beanstalk) - _Coming soon_
+- **API**: https://api.irondog.fit (AWS Lambda + API Gateway) - _Coming soon_
 
 ### Deployment Workflow
 - Push to `main` triggers CI/CD
-- API deploys to Elastic Beanstalk (us-west-2)
+- API deploys to AWS Lambda (esbuild bundle → `update-function-code`), fronted by API Gateway HTTPS
 - Web: CI validates the build; Amplify deploys via the committed `amplify.yml` build spec
 - Path filters ensure only changed packages deploy
 

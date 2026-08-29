@@ -6,74 +6,73 @@ on:
     paths:
       - 'packages/api/**'
       - 'packages/shared/**'
+      - 'infra/api-stack.yml'
       - '.github/workflows/deploy-api.yml'
   workflow_dispatch:  # Allow manual trigger
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
-    name: Deploy to AWS Elastic Beanstalk
+    name: Deploy API to AWS Lambda
     runs-on: ubuntu-latest
-    
-    # This job will be configured later when AWS is set up
-    # For now, it just validates the build
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      
-      - name: Build API
-        run: npm run build --workspace=@irondog/api
-      
-      - name: Package API for deployment
-        run: |
-          cd packages/api
-          # Create deployment package with dist/ and dependencies
-          mkdir -p deploy
-          cp -r dist package.json package-lock.json deploy/
-          cd deploy
-          npm ci --production --legacy-peer-deps
-          cd ..
-          zip -r ../../api-deploy.zip deploy/
-          cd ../..
-          ls -lh api-deploy.zip
-      
-      - name: Save deployment artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-deployment-${{ github.sha }}
-          path: api-deploy.zip
-          retention-days: 7
-      
-      # TODO: Add Elastic Beanstalk deployment step when AWS is configured
-      # - name: Deploy to Elastic Beanstalk
-      #   uses: einaregilsson/beanstalk-deploy@v22
-      #   with:
-      #     aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     application_name: irondog-api
-      #     environment_name: irondog-api-prod
-      #     version_label: ${{ github.sha }}
-      #     region: us-west-2
-      #     deployment_package: api-deploy.zip
 
-      - name: Deployment status
+      - name: Build and bundle API
         run: |
-          echo "✅ API build successful"
-          echo "📦 Deployment package created: api-deploy.zip"
-          echo ""
-          echo "🚀 AWS Elastic Beanstalk deployment will be configured next"
-          echo ""
-          echo "Next steps:"
-          echo "1. Set up Elastic Beanstalk in AWS console (us-west-2)"
-          echo "2. Add AWS credentials to GitHub secrets"
-          echo "3. Uncomment deployment step above"
-          echo "4. Configure custom domain: api.irondog.fit"
+          npm run build --workspace=@irondog/api
+          npm run bundle --workspace=@irondog/api
+
+      - name: Package Lambda bundle
+        run: |
+          cd packages/api/dist
+          rm -f ../../../api-lambda.zip
+          zip ../../../api-lambda.zip index.js index.js.map
+          cd ../../..
+          ls -lh api-lambda.zip
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Deploy Lambda code
+        run: |
+          if aws lambda get-function --function-name irondog-api --query Configuration.FunctionName --output text 2>/dev/null; then
+            aws lambda update-function-code --function-name irondog-api --zip-file fileb://api-lambda.zip --output text --query LastModified
+          else
+            echo "❌ Function irondog-api not found."
+            echo "   Deploy the infra stack first:"
+            echo "   aws cloudformation deploy --region us-west-2 \\"
+            echo "     --template-file infra/api-stack.yml --stack-name irondog-api \\"
+            echo "     --capabilities CAPABILITY_NAMED_IAM"
+            exit 1
+          fi
+
+      - name: Verify via Lambda invoke
+        run: |
+          aws lambda invoke --function-name irondog-api \
+            --payload '{"version":"2.0","rawPath":"/health","rawQueryString":"","headers":{},"requestContext":{"http":{"method":"GET","path":"/health"}}}' \
+            /tmp/invoke.json > /dev/null
+          cat /tmp/invoke.json
+          echo
+          grep -q '"status":"ok"' /tmp/invoke.json
+
+      - name: Verify via API Gateway
+        run: |
+          curl -fsS https://api.irondog.fit/health | grep '"status":"ok"'

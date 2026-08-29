@@ -5,22 +5,27 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --sourcemap --external:@aws-sdk/* --outfile=dist/index.js",
     "start": "node dist/index.js",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@irondog/shared": "*",
+    "@aws-sdk/client-dynamodb": "^3.750.0",
+    "@aws-sdk/lib-dynamodb": "^3.750.0",
     "express": "^5.2.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
-    "jwks-rsa": "^4.1.0"
+    "jwks-rsa": "^4.1.0",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^26.2.0",
+    "esbuild": "^0.25.0",
     "tsx": "^4.23.12",
     "typescript": "~5.9.2"
   }
