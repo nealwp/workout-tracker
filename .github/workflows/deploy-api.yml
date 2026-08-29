@@ -72,7 +72,7 @@ jobs:
             /tmp/invoke.json > /dev/null
           cat /tmp/invoke.json
           echo
-          grep -q '"status":"ok"' /tmp/invoke.json
+          jq -e '.statusCode == 200 and (.body | fromjson | .status == "ok")' /tmp/invoke.json > /dev/null
 
       - name: Verify via API Gateway
         run: |
