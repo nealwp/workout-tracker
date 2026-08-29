@@ -66,8 +66,11 @@ jobs:
 
       - name: Verify via Lambda invoke
         run: |
+          cat > /tmp/payload.json <<'EOF'
+          {"version":"2.0","rawPath":"/health","rawQueryString":"","headers":{},"requestContext":{"http":{"method":"GET","path":"/health"}}}
+          EOF
           aws lambda invoke --function-name irondog-api \
-            --payload '{"version":"2.0","rawPath":"/health","rawQueryString":"","headers":{},"requestContext":{"http":{"method":"GET","path":"/health"}}}' \
+            --payload file:///tmp/payload.json \
             /tmp/invoke.json > /dev/null
           cat /tmp/invoke.json
           echo
