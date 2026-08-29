@@ -1,9 +1,9 @@
 import crypto from "node:crypto";
 import { randomUUID } from "node:crypto";
 import type { User, Workout, ExerciseData } from "@irondog/shared";
-import type { Storage, GoogleUserInfo } from "./types";
+import type { GoogleUserInfo } from "./types";
 
-export class MemoryStorage implements Storage {
+export class MemoryStorage {
   private users: User[] = [];
   private workouts: Workout[] = [];
   private refreshTokens = new Map<string, string>();

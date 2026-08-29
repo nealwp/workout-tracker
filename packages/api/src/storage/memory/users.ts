@@ -37,6 +37,12 @@ export async function createUser(info: GoogleUserInfo): Promise<User> {
   return toUser(record);
 }
 
+export async function findOrCreateUser(info: GoogleUserInfo): Promise<User> {
+  const existing = await getUserByGoogleId(info.googleId);
+  if (existing) return existing;
+  return createUser(info);
+}
+
 export async function getUserById(userId: string): Promise<User | undefined> {
   const item = users.find((u) => u.id === userId);
   return item ? toUser(item) : undefined;

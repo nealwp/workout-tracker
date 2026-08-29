@@ -53,6 +53,19 @@ export async function createUser(info: GoogleUserInfo): Promise<User> {
   return user;
 }
 
+export async function findOrCreateUser(info: GoogleUserInfo): Promise<User> {
+  const existing = await getUserByGoogleId(info.googleId);
+  if (existing) return existing;
+
+  try {
+    return await createUser(info);
+  } catch {
+    const raced = await getUserByGoogleId(info.googleId);
+    if (raced) return raced;
+    return createUser(info);
+  }
+}
+
 export async function getUserById(userId: string): Promise<User | undefined> {
   const result = await docClient.send(
     new GetCommand({

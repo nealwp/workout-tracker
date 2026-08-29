@@ -1,14 +1,9 @@
 import crypto from "node:crypto";
 import { DeleteCommand, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import type { RefreshTokenRecord } from "../types";
 import { docClient } from "./shared";
 
 export const REFRESH_TOKENS_TABLE = "irondog-refresh-tokens";
-
-export interface RefreshTokenRecord {
-  tokenHash: string;
-  userId: string;
-  expiresAt: number;
-}
 
 export function hashRefreshToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");

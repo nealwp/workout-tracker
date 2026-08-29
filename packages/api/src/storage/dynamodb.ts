@@ -9,7 +9,7 @@ import {
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import type { User, Workout, ExerciseData } from "@irondog/shared";
-import type { Storage, GoogleUserInfo } from "./types";
+import type { GoogleUserInfo } from "./types";
 
 const TABLE = process.env.DYNAMODB_TABLE ?? "irondog-api";
 
@@ -82,7 +82,7 @@ function toWorkout(item: WorkoutItem): Workout {
   };
 }
 
-export class DynamoDBStorage implements Storage {
+export class DynamoDBStorage {
   async findOrCreateUser(info: GoogleUserInfo): Promise<User> {
     const existing = await this.findUserByGoogleId(info.googleId);
     if (existing) return existing;

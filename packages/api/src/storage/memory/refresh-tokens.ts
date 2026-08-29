@@ -1,10 +1,5 @@
 import crypto from "node:crypto";
-
-export interface RefreshTokenRecord {
-  tokenHash: string;
-  userId: string;
-  expiresAt: number;
-}
+import type { RefreshTokenRecord } from "../types";
 
 const tokens: Map<string, RefreshTokenRecord> = new Map();
 
