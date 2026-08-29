@@ -1,4 +1,4 @@
-name: Deploy Web
+name: Validate Web Build
 
 on:
   push:
@@ -9,9 +9,11 @@ on:
       - '.github/workflows/deploy-web.yml'
   workflow_dispatch:
 
+# This job only validates that the web app builds. AWS Amplify performs the
+# actual deploy using the committed amplify.yml build spec (repo root).
 jobs:
-  deploy:
-    name: Deploy to AWS Amplify
+  validate:
+    name: Validate web build
     runs-on: ubuntu-latest
     
     steps:
@@ -33,29 +35,24 @@ jobs:
           # EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID will be set in Amplify console
         run: npm run build:web --workspace=@irondog/web
       
-      - name: Save build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-build-${{ github.sha }}
-          path: packages/web/dist/
-          retention-days: 7
-      
-      - name: Deployment status
+      - name: Verify build output
         run: |
-          echo "✅ Web build successful"
-          echo "📦 Build artifacts ready in packages/web/dist/"
+          if [ ! -d "packages/web/dist" ]; then
+            echo "❌ Error: Web build failed - dist directory not found"
+            exit 1
+          fi
+          echo "✅ Web build validation successful"
           echo ""
-          echo "🚀 AWS Amplify auto-deploys from GitHub"
-          echo ""
-          echo "Deployment handled by AWS Amplify:"
-          echo "- Amplify monitors this GitHub repository"
+          echo "🚀 AWS Amplify handles the actual deployment:"
+          echo "- Amplify fetches the repo and builds using amplify.yml (repo root)"
+          echo "- Build spec: npm ci --legacy-peer-deps → npm run build:web --workspace=@irondog/web"
+          echo "- Serves static output from packages/web/dist/"
           echo "- Auto-deploys on push to main branch"
-          echo "- Build settings configured in Amplify console"
           echo ""
-          echo "This workflow validates the build works correctly"
-          echo ""
-          echo "Next steps:"
-          echo "1. Connect GitHub repo to AWS Amplify (us-west-2)"
-          echo "2. Configure build settings for packages/web"
-          echo "3. Add environment variables in Amplify console"
-          echo "4. Configure custom domain: irondog.fit"
+          echo "One-time Amplify console setup:"
+          echo "1. Create app → connect GitHub repo, branch main"
+          echo "2. Root directory: /, build image: Node 20"
+          echo "3. Env vars: EXPO_PUBLIC_API_URL, EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID"
+          echo "4. Domain management: irondog.fit (Amplify provisions SSL)"
+          echo "5. Add https://irondog.fit redirect URI to Google OAuth client"
+          echo "6. Allow https://irondog.fit (and *.amplifyapp.com) as CORS origin on the API"

@@ -157,7 +157,7 @@ packages/
   workflows/
     ci.yml                        # Lint, test, build on PR/push
     deploy-api.yml                # Deploy API to AWS Beanstalk
-    deploy-web.yml                # Deploy web to AWS Amplify
+    deploy-web.yml                # Validate web build (Amplify deploys via amplify.yml)
 ```
 
 ## Conventions
@@ -185,7 +185,7 @@ packages/
 - Push to `main` triggers deployments
 - Path filters: only deploy changed packages
 - API workflow: build → package → deploy to Beanstalk
-- Web workflow: build → deploy via Amplify auto-deployment
+- Web workflow: validate build in CI; AWS Amplify deploys using the committed `amplify.yml` build spec (repo root, serves `packages/web/dist`)
 
 ### Environment Variables
 - **API**: `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `JWT_SECRET`, `PORT`, `NODE_ENV`
