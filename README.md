@@ -89,7 +89,7 @@ Currently: **62 tests passing** ✅
 ### Deployment Workflow
 - Push to `main` triggers CI/CD
 - API deploys to Elastic Beanstalk (us-west-2)
-- Web deploys via Amplify auto-deployment
+- Web: CI validates the build; Amplify deploys via the committed `amplify.yml` build spec
 - Path filters ensure only changed packages deploy
 
 ## Environment Variables
