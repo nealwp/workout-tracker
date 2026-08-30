@@ -54,4 +54,10 @@ export function getStorage(): Storage {
   return memoryStorage();
 }
 
+export function isMemoryStorage(): boolean {
+  if (process.env.STORAGE === "memory") return true;
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.STORAGE === "dynamodb") return false;
+  return true;
+}
+
 export type { Storage } from "./types";

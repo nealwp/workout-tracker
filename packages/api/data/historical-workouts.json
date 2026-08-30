@@ -1,0 +1,2709 @@
+{
+  "version": 1,
+  "workouts": [
+    {
+      "date": "2026-08-01",
+      "exercises": [
+        {
+          "id": "tricep-pushdown",
+          "name": "Tricep Pushdown",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 25,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 30,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "cable-curl",
+          "name": "Cable Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 35,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "overhead-tricep-extension",
+          "name": "Overhead Tricep Extension",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "dumbbell-curl",
+          "name": "Dumbbell Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "hammer-curl",
+          "name": "Hammer Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 20,
+              "reps": 7,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 90,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 110,
+              "reps": 7,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 110,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 90,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-01"
+    },
+    {
+      "date": "2026-08-03",
+      "exercises": [
+        {
+          "id": "overhead-press",
+          "name": "Overhead Press",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 35,
+              "reps": 11,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 40,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 5,
+              "weight": 30,
+              "reps": 4,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "upright-row",
+          "name": "Upright Row",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 9,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 50,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "lateral-raise",
+          "name": "Lateral Raise",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 20,
+              "reps": 8,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "shrug",
+          "name": "Shrug",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 72.5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 87.5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 95,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-03"
+    },
+    {
+      "date": "2026-08-04",
+      "exercises": [
+        {
+          "id": "chest-supported-row",
+          "name": "Chest-Supported Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 110,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 120,
+              "reps": 7,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 6,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "reverse-pec-deck",
+          "name": "Reverse Pec Deck",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 50,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 7,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "seated-cable-row",
+          "name": "Seated Cable Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 45,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 60,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 80,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 80,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 5,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 6,
+              "weight": 85,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 7,
+              "weight": 100,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 8,
+              "weight": 100,
+              "reps": 8,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "straight-arm-pulldown",
+          "name": "Straight Arm Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 35,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 35,
+              "reps": 7,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-04"
+    },
+    {
+      "date": "2026-08-05",
+      "exercises": [
+        {
+          "id": "leg-press",
+          "name": "Leg Press",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 140,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 180,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 200,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 220,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "calf-raise",
+          "name": "Calf Raise",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 165,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 180,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 195,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 210,
+              "reps": 14,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "leg-curl",
+          "name": "Leg Curl",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 100,
+              "reps": 20,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 120,
+              "reps": 12,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 130,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 120,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "leg-extension",
+          "name": "Leg Extension",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 100,
+              "reps": 12,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 120,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-05"
+    },
+    {
+      "date": "2026-08-07",
+      "exercises": [
+        {
+          "id": "incline-bench-press",
+          "name": "Incline Bench Press",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 95,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 95,
+              "reps": 7,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 95,
+              "reps": 6,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 75,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "cable-fly",
+          "name": "Cable Fly",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 45,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 45,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 10,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 35,
+              "reps": 12,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "cable-chest-press",
+          "name": "Cable Chest Press",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "pec-dec",
+          "name": "Pec-Deck",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 70,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 80,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 90,
+              "reps": 5,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 60,
+              "reps": 10,
+              "failure": true
+            },
+            {
+              "id": 5,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "chest-press-machine",
+          "name": "Chest Press Machine",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 60,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 90,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 110,
+              "reps": 6,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 90,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-07"
+    },
+    {
+      "date": "2026-08-09",
+      "exercises": [
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 90,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 180,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "preacher-curl",
+          "name": "Preacher Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 12,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "tricep-pushdown",
+          "name": "Tricep Pushdown",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 57.5,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 42,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "dumbbell-curl",
+          "name": "Dumbbell Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 25,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "overhead-tricep-extension",
+          "name": "Overhead Tricep Extension",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 10,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 12.5,
+              "reps": 12,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 10,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "hammer-curl",
+          "name": "Hammer Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 20,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-09"
+    },
+    {
+      "date": "2026-08-10",
+      "exercises": [
+        {
+          "id": "overhead-press",
+          "name": "Overhead Press",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 35,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 45,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 50,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "upright-row",
+          "name": "Upright Row",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 42.5,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 50,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 57.5,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "lateral-raise",
+          "name": "Lateral Raise",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 15,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 15,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 15,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "shrug",
+          "name": "Shrug",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 95,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 115,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 135,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-10"
+    },
+    {
+      "date": "2026-08-11",
+      "exercises": [
+        {
+          "id": "chest-supported-row",
+          "name": "Chest-Supported Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 140,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 180,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 140,
+              "reps": 5,
+              "failure": false
+            },
+            {
+              "id": 5,
+              "weight": 90,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "lat-pulldown",
+          "name": "Lat Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 85,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 100,
+              "reps": 10,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 70,
+              "reps": 8,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "seated-cable-row",
+          "name": "Seated Cable Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 85,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "straight-arm-pulldown",
+          "name": "Straight Arm Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 6,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "reverse-pec-deck",
+          "name": "Reverse Pec Deck",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 30,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-11"
+    },
+    {
+      "date": "2026-08-12",
+      "exercises": [
+        {
+          "id": "leg-press",
+          "name": "Leg Press",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "calf-raise",
+          "name": "Calf Raise",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 150,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 165,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 180,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "leg-curl",
+          "name": "Leg Curl",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-12"
+    },
+    {
+      "date": "2026-08-14",
+      "exercises": [
+        {
+          "id": "incline-dumbbell-press",
+          "name": "Incline Dumbbell Press",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 28,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 30,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "cable-fly",
+          "name": "Cable Fly",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 5,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 5,
+              "reps": 13,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "chest-press-machine",
+          "name": "Chest Press Machine",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 70,
+              "reps": 13,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 80,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 40,
+              "reps": 18,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "pec-dec",
+          "name": "Pec-Deck",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 50,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 50,
+              "reps": 16,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 60,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 30,
+              "reps": 30,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-14"
+    },
+    {
+      "date": "2026-08-17",
+      "exercises": [
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 160,
+              "reps": 14,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 140,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "preacher-curl",
+          "name": "Preacher Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 50,
+              "reps": 20,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 60,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 60,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "overhead-tricep-extension",
+          "name": "Overhead Tricep Extension",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 25,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 35,
+              "reps": 5,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 25,
+              "reps": 5,
+              "failure": false
+            },
+            {
+              "id": 5,
+              "weight": 15,
+              "reps": 5,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "dumbbell-curl",
+          "name": "Dumbbell Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 25,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 25,
+              "reps": 10,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "tricep-pushdown",
+          "name": "Tricep Pushdown",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 50,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 30,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-17"
+    },
+    {
+      "date": "2026-08-18",
+      "exercises": [
+        {
+          "id": "overhead-press",
+          "name": "Overhead Press",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 35,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 4,
+              "weight": 30,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "lateral-raise",
+          "name": "Lateral Raise",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 5,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 6,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "shrug",
+          "name": "Shrug",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 135,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 185,
+              "reps": 7,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 155,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "reverse-pec-deck",
+          "name": "Reverse Pec Deck",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-18"
+    },
+    {
+      "date": "2026-08-19",
+      "exercises": [
+        {
+          "id": "chest-supported-row",
+          "name": "Chest-Supported Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "lat-pulldown",
+          "name": "Lat Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 90,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 100,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "straight-arm-pulldown",
+          "name": "Straight Arm Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 11,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "seated-cable-row",
+          "name": "Seated Cable Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 100,
+              "reps": 2,
+              "failure": false
+            },
+            {
+              "id": 5,
+              "weight": 100,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 6,
+              "weight": 85,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 7,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-19"
+    },
+    {
+      "date": "2026-08-20",
+      "exercises": [
+        {
+          "id": "leg-press",
+          "name": "Leg Press",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 200,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 220,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 240,
+              "reps": 8,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "leg-extension",
+          "name": "Leg Extension",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "leg-curl",
+          "name": "Leg Curl",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 120,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 130,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "calf-raise",
+          "name": "Calf Raise",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 210,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 225,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 240,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-20"
+    },
+    {
+      "date": "2026-08-22",
+      "exercises": [
+        {
+          "id": "cable-chest-press",
+          "name": "Cable Chest Press",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 60,
+              "reps": 10,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 12,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "shoulder-press-machine",
+          "name": "Shoulder Press Machine",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 50,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "pec-dec",
+          "name": "Pec-Deck",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 70,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "overhead-tricep-extension",
+          "name": "Overhead Tricep Extension",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 15,
+              "reps": 20,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 20,
+              "reps": 13,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 4,
+              "weight": 15,
+              "reps": 15,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "lateral-raise",
+          "name": "Lateral Raise",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 5,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 7.5,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 10,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "calf-raise",
+          "name": "Calf Raise",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 210,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 225,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 240,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-22"
+    },
+    {
+      "date": "2026-08-23",
+      "exercises": [
+        {
+          "id": "chest-supported-row",
+          "name": "Chest-Supported Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 150,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 12,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "lat-pulldown",
+          "name": "Lat Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 85,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "preacher-curl",
+          "name": "Preacher Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 70,
+              "reps": 7,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "seated-cable-row",
+          "name": "Seated Cable Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 85,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 100,
+              "reps": 11,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "hammer-curl",
+          "name": "Hammer Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 25,
+              "reps": 8,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 20,
+              "reps": 10,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "straight-arm-pulldown",
+          "name": "Straight Arm Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 11,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "reverse-pec-deck",
+          "name": "Reverse Pec Deck",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-23"
+    },
+    {
+      "date": "2026-08-26",
+      "exercises": [
+        {
+          "id": "leg-press",
+          "name": "Leg Press",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 220,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 240,
+              "reps": 8,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 240,
+              "reps": 7,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "leg-curl",
+          "name": "Leg Curl",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 140,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 150,
+              "reps": 12,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 7,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "calf-raise",
+          "name": "Calf Raise",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 240,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 255,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 270,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "leg-extension",
+          "name": "Leg Extension",
+          "muscleGroup": "legs",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 120,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 140,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-26"
+    },
+    {
+      "date": "2026-08-27",
+      "exercises": [
+        {
+          "id": "cable-chest-press",
+          "name": "Cable Chest Press",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 70,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 70,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "dip-machine",
+          "name": "Dip Machine",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 160,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 170,
+              "reps": 11,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 170,
+              "reps": 8,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "shoulder-press-machine",
+          "name": "Shoulder Press Machine",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 50,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 60,
+              "reps": 9,
+              "failure": true
+            },
+            {
+              "id": 3,
+              "weight": 60,
+              "reps": 7,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "pec-dec",
+          "name": "Pec-Deck",
+          "muscleGroup": "chest",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 70,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 80,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 90,
+              "reps": 7,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "overhead-tricep-extension",
+          "name": "Overhead Tricep Extension",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 20,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 25,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 30,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "lateral-raise",
+          "name": "Lateral Raise",
+          "muscleGroup": "shoulders",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 10,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 12.5,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 13.5,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-27"
+    },
+    {
+      "date": "2026-08-28",
+      "exercises": [
+        {
+          "id": "chest-supported-row",
+          "name": "Chest-Supported Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 150,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 160,
+              "reps": 11,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 160,
+              "reps": 10,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "lat-pulldown",
+          "name": "Lat Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 120,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 9,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "preacher-curl",
+          "name": "Preacher Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 60,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 70,
+              "reps": 9,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 70,
+              "reps": 6,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "seated-cable-row",
+          "name": "Seated Cable Row",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 100,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 120,
+              "reps": 10,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 120,
+              "reps": 8,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "hammer-curl",
+          "name": "Hammer Curl",
+          "muscleGroup": "arms",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 15,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 15,
+              "reps": 15,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 15,
+              "reps": 12,
+              "failure": false
+            }
+          ]
+        },
+        {
+          "id": "straight-arm-pulldown",
+          "name": "Straight Arm Pulldown",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 50,
+              "reps": 7,
+              "failure": true
+            }
+          ]
+        },
+        {
+          "id": "reverse-pec-deck",
+          "name": "Reverse Pec Deck",
+          "muscleGroup": "back",
+          "sets": [
+            {
+              "id": 1,
+              "weight": 30,
+              "reps": 12,
+              "failure": false
+            },
+            {
+              "id": 2,
+              "weight": 40,
+              "reps": 11,
+              "failure": false
+            },
+            {
+              "id": 3,
+              "weight": 40,
+              "reps": 9,
+              "failure": true
+            }
+          ]
+        }
+      ],
+      "id": "history-2026-08-28"
+    }
+  ]
+}

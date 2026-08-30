@@ -18,3 +18,8 @@ export interface Workout {
   date: string;
   exercises: ExerciseData[];
 }
+
+export interface LastExercisePerformance {
+  date: string;
+  exercise: ExerciseData;
+}

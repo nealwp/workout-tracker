@@ -59,18 +59,18 @@ describe("SelectExercise Screen", () => {
 
     expect(screen.getByText("Choose Exercise")).toBeTruthy();
     expect(screen.getByText("Incline Bench Press")).toBeTruthy();
-    expect(screen.getByText("Flat Bench Press")).toBeTruthy();
+    expect(screen.getByText("Cable Fly")).toBeTruthy();
   });
 
   it("navigates to exercise screen when exercise is pressed", () => {
     render(<SelectExercise />, { wrapper: TestWrapper });
 
     fireEvent.press(screen.getByText("Chest"));
-    fireEvent.press(screen.getByText("Flat Bench Press"));
+    fireEvent.press(screen.getByText("Cable Fly"));
 
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/workout/exercise",
-      params: { exerciseId: "flat-bench-press" },
+      params: { exerciseId: "cable-fly" },
     });
   });
 
@@ -80,8 +80,8 @@ describe("SelectExercise Screen", () => {
     fireEvent.press(screen.getByText("Legs"));
 
     expect(screen.getByText("Leg Press")).toBeTruthy();
-    expect(screen.getByText("Barbell Squat")).toBeTruthy();
-    expect(screen.queryByText("Flat Bench Press")).toBeNull();
+    expect(screen.getByText("Leg Curl")).toBeTruthy();
+    expect(screen.queryByText("Cable Fly")).toBeNull();
   });
 
   it("shows completed exercises when available", () => {
@@ -89,9 +89,9 @@ describe("SelectExercise Screen", () => {
       workoutId: "workout-123",
       completedExercises: [
         {
-          id: "flat-bench-press",
-          name: "Flat Bench Press",
-          muscleGroup: "Chest",
+          id: "cable-chest-press",
+          name: "Cable Chest Press",
+          muscleGroup: "chest",
           sets: [
             { id: 1, weight: 135, reps: 10, failure: false },
             { id: 2, weight: 155, reps: 8, failure: true },
@@ -105,7 +105,7 @@ describe("SelectExercise Screen", () => {
     render(<SelectExercise />, { wrapper: TestWrapper });
 
     expect(screen.getByText(/Completed Exercises/)).toBeTruthy();
-    expect(screen.getByText("Flat Bench Press")).toBeTruthy();
+    expect(screen.getByText("Cable Chest Press")).toBeTruthy();
     expect(screen.getByText("2")).toBeTruthy();
   });
 });

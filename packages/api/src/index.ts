@@ -6,7 +6,8 @@ import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import serverless from "serverless-http";
 import type { AuthPayload, ExerciseData, Workout } from "@irondog/shared";
-import { getStorage } from "./storage";
+import { getStorage, isMemoryStorage } from "./storage";
+import { seedHistoricalWorkouts } from "./storage/seedHistoricalWorkouts";
 import { logger } from "./logger";
 
 const app = express();
@@ -15,6 +16,12 @@ const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString("he
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "";
 const storage = getStorage();
 const REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60;
+// Seed brand-new local users with historical workout data (see
+// data/historical-workouts.json) so the workout history / "last time" lookup
+// has realistic data to work with immediately, without manually logging
+// workouts first. Only applies to the in-memory storage backend used for
+// local dev (never DynamoDB/Lambda), and only the first time a user signs in.
+const SEED_NEW_USERS_WITH_HISTORY = isMemoryStorage();
 
 app.use(
   cors({
@@ -121,7 +128,22 @@ app.post("/auth/google", async (req, res) => {
     }
 
     const googleUser = await verifyGoogleToken(idToken);
+    const existingUser = await storage.getUserByGoogleId(googleUser.googleId);
     const user = await storage.findOrCreateUser(googleUser);
+
+    if (!existingUser && SEED_NEW_USERS_WITH_HISTORY) {
+      try {
+        const count = await seedHistoricalWorkouts(storage, user.id);
+        if (count > 0) {
+          logger.info("seeded historical workout data for new local user", {
+            userId: user.id,
+            count,
+          });
+        }
+      } catch (err) {
+        logger.warn("failed to seed historical workout data", { userId: user.id }, err);
+      }
+    }
 
     const tokens = signTokens({ userId: user.id, email: user.email });
     await storage.storeRefreshToken(
@@ -204,6 +226,18 @@ app.get("/workouts/today", requireAuth, async (req, res) => {
 app.get("/workouts", requireAuth, async (req, res) => {
   const userWorkouts = await storage.listWorkouts(req.userId!);
   res.json(userWorkouts);
+});
+
+app.get("/workouts/exercise/:exerciseId/last", requireAuth, async (req, res) => {
+  const userWorkouts = await storage.listWorkouts(req.userId!);
+  for (const workout of userWorkouts) {
+    const exercise = workout.exercises.find((e) => e.id === req.params.exerciseId);
+    if (exercise) {
+      res.json({ date: workout.date, exercise });
+      return;
+    }
+  }
+  res.status(404).json({ error: "No previous workout found for this exercise" });
 });
 
 app.get("/workouts/:id", requireAuth, async (req, res) => {

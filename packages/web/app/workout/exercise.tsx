@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Button, H1, H2, Input, Separator, ScrollView, XStack, YStack } from "tamagui";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Button, Collapsible, H1, H2, Input, ScrollView, YStack } from "tamagui";
+import type { LastExercisePerformance } from "@irondog/shared";
+import { SetsTable } from "@/components/SetsTable";
 import { EXERCISES } from "@/data/exercises";
+import { getLastExercisePerformance } from "@/lib/api/client";
 import { useWorkout } from "../../context/WorkoutContext";
 
 interface Set {
@@ -31,6 +35,8 @@ export default function ExerciseTracker() {
   const [reps, setReps] = useState("");
   const [failure, setFailure] = useState(false);
   const [restRemaining, setRestRemaining] = useState<number | null>(null);
+  const [lastPerformance, setLastPerformance] = useState<LastExercisePerformance | null>(null);
+  const [lastPerformanceOpen, setLastPerformanceOpen] = useState(false);
 
   useEffect(() => {
     if (restRemaining === null || restRemaining <= 0) return;
@@ -39,6 +45,23 @@ export default function ExerciseTracker() {
     }, 1000);
     return () => clearTimeout(id);
   }, [restRemaining]);
+
+  useEffect(() => {
+    if (!exerciseId) return;
+    let cancelled = false;
+
+    getLastExercisePerformance(exerciseId)
+      .then((result) => {
+        if (!cancelled) setLastPerformance(result);
+      })
+      .catch(() => {
+        if (!cancelled) setLastPerformance(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [exerciseId]);
 
   const handleStartRest = () => {
     setRestRemaining(REST_SECONDS);
@@ -130,6 +153,36 @@ export default function ExerciseTracker() {
           </H2>
         </YStack>
 
+        {lastPerformance && (
+          <Collapsible open={lastPerformanceOpen} onOpenChange={setLastPerformanceOpen}>
+            <Collapsible.Trigger asChild>
+              <Button
+                bg="$red10"
+                py="$3"
+                px="$4"
+                rounded="$4"
+                justify="space-between"
+                items="center"
+                pressStyle={{ bg: "$red9", opacity: 0.8 }}
+              >
+                <Button.Text color="white" fontSize={14} fontWeight="600">
+                  LAST TIME — {new Date(lastPerformance.date).toLocaleDateString()}
+                </Button.Text>
+                <MaterialIcons
+                  name={lastPerformanceOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                  size={20}
+                  color="white"
+                />
+              </Button>
+            </Collapsible.Trigger>
+            <Collapsible.Content>
+              <YStack mt="$2">
+                <SetsTable sets={lastPerformance.exercise.sets} />
+              </YStack>
+            </Collapsible.Content>
+          </Collapsible>
+        )}
+
         <YStack gap="$3" bg="$gray4" p="$4" rounded="$4">
           <YStack gap="$2">
             <H2 color="$color" fontSize={12} fontWeight="600">
@@ -220,44 +273,16 @@ export default function ExerciseTracker() {
             <H2 color="$color" fontSize={14} fontWeight="600">
               COMPLETED SETS
             </H2>
-            <Separator borderColor="$gray6" />
-            {sets.map((set) => (
-              <XStack
-                key={set.id}
-                justify="space-between"
-                items="center"
-                py="$3"
-                px="$4"
-                bg="$gray4"
-                rounded="$4"
-              >
-                <H2 color="$color" fontSize={14} fontWeight="600">
-                  Set {set.id}
-                </H2>
-                <XStack gap="$4" items="center">
-                  <H2 color="$color" fontSize={16} fontWeight="bold">
-                    {set.weight} lbs
-                  </H2>
-                  <H2 color="$gray11" fontSize={14}>
-                    × {set.reps}
-                  </H2>
-                  {set.failure && (
-                    <H2 color="$red10" fontSize={12} fontWeight="600">
-                      FAIL
-                    </H2>
-                  )}
-                </XStack>
-              </XStack>
-            ))}
+            <SetsTable sets={sets} />
           </YStack>
         )}
 
         <Button
           onPress={handleFinishExercise}
-          bg="$gray5"
-          pressStyle={{ bg: "$gray6", opacity: 0.8 }}
+          bg="$red10"
+          pressStyle={{ bg: "$red9", opacity: 0.8 }}
         >
-          <Button.Text color="$gray12" fontSize={16} fontWeight="bold">
+          <Button.Text color="white" fontSize={16} fontWeight="bold">
             FINISH EXERCISE
           </Button.Text>
         </Button>
