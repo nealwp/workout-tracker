@@ -182,18 +182,23 @@ app.get("/auth/me", requireAuth, async (req, res) => {
 });
 
 app.get("/workouts/today", requireAuth, async (req, res) => {
-  const date = req.query.date as string;
-  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    res.status(400).json({ error: "Missing or invalid date parameter (YYYY-MM-DD format)" });
-    return;
+  try {
+    const date = req.query.date as string;
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      res.status(400).json({ error: "Missing or invalid date parameter (YYYY-MM-DD format)" });
+      return;
+    }
+    const userWorkouts = await storage.listWorkouts(req.userId!);
+    const todaysWorkout = userWorkouts.find((w) => w.date && w.date.startsWith(date));
+    if (!todaysWorkout) {
+      res.status(404).json({ error: "No workout for today" });
+      return;
+    }
+    res.json(todaysWorkout);
+  } catch (err) {
+    logger.error("get workouts today error", { path: req.path }, err);
+    res.status(500).json({ error: "Internal server error" });
   }
-  const userWorkouts = await storage.listWorkouts(req.userId!);
-  const todaysWorkout = userWorkouts.find((w) => w.date.startsWith(date));
-  if (!todaysWorkout) {
-    res.status(404).json({ error: "No workout for today" });
-    return;
-  }
-  res.json(todaysWorkout);
 });
 
 app.get("/workouts", requireAuth, async (req, res) => {
@@ -211,13 +216,18 @@ app.get("/workouts/:id", requireAuth, async (req, res) => {
 });
 
 app.post("/workouts", requireAuth, async (req, res) => {
-  const date = req.body.date as string;
-  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    res.status(400).json({ error: "Missing or invalid date parameter (YYYY-MM-DD format)" });
-    return;
+  try {
+    const date = req.body.date as string;
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      res.status(400).json({ error: "Missing or invalid date parameter (YYYY-MM-DD format)" });
+      return;
+    }
+    const workout = await storage.createWorkout(req.userId!, { date });
+    res.status(201).json(workout);
+  } catch (err) {
+    logger.error("create workout error", { path: req.path }, err);
+    res.status(500).json({ error: "Internal server error" });
   }
-  const workout = await storage.createWorkout(req.userId!, { date });
-  res.status(201).json(workout);
 });
 
 app.post("/workouts/:id/exercises", requireAuth, async (req, res) => {

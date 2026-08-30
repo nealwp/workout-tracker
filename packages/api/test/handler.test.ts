@@ -69,7 +69,7 @@ describe("handler", { concurrency: 1 }, () => {
 
   test("GET /workouts/today returns 404 when no workout exists", async () => {
     const headers = getAuthHeaders("handler-user-no-workout");
-    const date = new Date().toISOString().slice(0, 10);
+    const date = new Date().toLocaleDateString("en-CA");
     const res = await handler(event("GET", `/workouts/today?date=${date}`, { headers }));
     assert.equal(res.statusCode, 404);
     assert.equal(parseBody(res).error, "No workout for today");
