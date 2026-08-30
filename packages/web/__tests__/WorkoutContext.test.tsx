@@ -66,10 +66,11 @@ describe("WorkoutContext", () => {
 
   it("resumes existing workout for today", async () => {
     const existingExercises = [
-      { id: "flat-bench-press", name: "Flat Bench Press", muscleGroup: "chest", sets: [{ id: 1, weight: 135, reps: 10, failure: false }] },
+      { id: "incline-bench-press", name: "Incline Bench Press", muscleGroup: "chest", sets: [{ id: 1, weight: 135, reps: 10, failure: false }] },
     ];
     mockGetTodayWorkout.mockResolvedValue({
       id: "workout-existing",
+      userId: "user-1",
       date: "2026-08-21",
       exercises: existingExercises,
     });
@@ -83,8 +84,8 @@ describe("WorkoutContext", () => {
     expect(latestCtx.workoutId).toBe("workout-existing");
     expect(latestCtx.completedExercises).toHaveLength(1);
     expect(latestCtx.completedExercises[0]).toEqual({
-      id: "flat-bench-press",
-      name: "Flat Bench Press",
+      id: "incline-bench-press",
+      name: "Incline Bench Press",
       muscleGroup: "chest",
       sets: [{ id: 1, weight: 135, reps: 10, failure: false }],
     });
@@ -114,21 +115,21 @@ describe("WorkoutContext", () => {
     ];
 
     await act(async () => {
-      await latestCtx.finishExercise("flat-bench-press", sets);
+      await latestCtx.finishExercise("incline-bench-press", sets);
     });
 
     expect(latestCtx.completedExercises).toHaveLength(1);
     expect(latestCtx.completedExercises[0]).toEqual({
-      id: "flat-bench-press",
-      name: "Flat Bench Press",
+      id: "incline-bench-press",
+      name: "Incline Bench Press",
       muscleGroup: "chest",
       sets,
     });
     expect(mockAddExerciseToWorkout).toHaveBeenCalledWith(
       "workout-456",
       {
-        id: "flat-bench-press",
-        name: "Flat Bench Press",
+        id: "incline-bench-press",
+        name: "Incline Bench Press",
         muscleGroup: "chest",
         sets,
       }
@@ -139,7 +140,7 @@ describe("WorkoutContext", () => {
     renderProvider();
 
     await act(async () => {
-      await latestCtx.finishExercise("flat-bench-press", [
+      await latestCtx.finishExercise("incline-bench-press", [
         { id: 1, weight: 135, reps: 10, failure: false },
       ]);
     });
@@ -188,20 +189,20 @@ describe("WorkoutContext", () => {
     });
 
     await act(async () => {
-      await latestCtx.finishExercise("flat-bench-press", [
+      await latestCtx.finishExercise("incline-bench-press", [
         { id: 1, weight: 135, reps: 10, failure: false },
       ]);
     });
 
     await act(async () => {
-      await latestCtx.finishExercise("flat-dumbbell-press", [
+      await latestCtx.finishExercise("incline-dumbbell-press", [
         { id: 1, weight: 60, reps: 12, failure: false },
       ]);
     });
 
     expect(latestCtx.completedExercises).toHaveLength(2);
-    expect(latestCtx.completedExercises[0].id).toBe("flat-bench-press");
-    expect(latestCtx.completedExercises[1].id).toBe("flat-dumbbell-press");
+    expect(latestCtx.completedExercises[0].id).toBe("incline-bench-press");
+    expect(latestCtx.completedExercises[1].id).toBe("incline-dumbbell-press");
   });
 
   it("resets state on new workout", async () => {
@@ -220,7 +221,7 @@ describe("WorkoutContext", () => {
     });
 
     await act(async () => {
-      await latestCtx.finishExercise("flat-bench-press", [
+      await latestCtx.finishExercise("incline-bench-press", [
         { id: 1, weight: 135, reps: 10, failure: false },
       ]);
     });

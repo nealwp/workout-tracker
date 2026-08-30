@@ -31,7 +31,7 @@ const mockGetLastExercisePerformance = getLastExercisePerformance as jest.Mocked
 
 beforeEach(() => {
   jest.clearAllMocks();
-  mockUseLocalSearchParams.mockReturnValue({ exerciseId: "flat-bench-press" });
+  mockUseLocalSearchParams.mockReturnValue({ exerciseId: "incline-bench-press" });
   mockUseWorkout.mockReturnValue({
     workoutId: "workout-123",
     completedExercises: [],
@@ -46,44 +46,52 @@ afterEach(() => {
 });
 
 describe("ExerciseTracker Screen", () => {
-  it("renders the exercise name", () => {
+  it("renders the exercise name", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
-    expect(screen.getByText("Flat Bench Press")).toBeTruthy();
+    await act(async () => {});
+    expect(screen.getByText("Incline Bench Press")).toBeTruthy();
   });
 
-  it("renders the initial set number", () => {
+  it("renders the initial set number", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("Set 1")).toBeTruthy();
   });
 
-  it("renders weight and reps inputs", () => {
+  it("renders weight and reps inputs", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getAllByPlaceholderText("0")).toHaveLength(2);
   });
 
-  it("renders LOG SET button", () => {
+  it("renders LOG SET button", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("LOG SET")).toBeTruthy();
   });
 
-  it("renders FINISH EXERCISE button", () => {
+  it("renders FINISH EXERCISE button", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("FINISH EXERCISE")).toBeTruthy();
   });
 
-  it("renders failure toggle", () => {
+  it("renders failure toggle", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("TAKEN TO FAILURE?")).toBeTruthy();
   });
 
-  it("shows Exercise not found for invalid exerciseId", () => {
+  it("shows Exercise not found for invalid exerciseId", async () => {
     mockUseLocalSearchParams.mockReturnValue({ exerciseId: "nonexistent" });
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("Exercise not found")).toBeTruthy();
   });
 
-  it("toggles failure state", () => {
+  it("toggles failure state", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     fireEvent.press(screen.getByText("TAKEN TO FAILURE?"));
     expect(screen.getByText("FAILURE ✓")).toBeTruthy();
@@ -92,13 +100,15 @@ describe("ExerciseTracker Screen", () => {
     expect(screen.getByText("TAKEN TO FAILURE?")).toBeTruthy();
   });
 
-  it("does not render completed sets section initially", () => {
+  it("does not render completed sets section initially", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.queryByText("COMPLETED SETS")).toBeNull();
   });
 
-  it("logs a set and shows it in completed sets", () => {
+  it("logs a set and shows it in completed sets", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     const inputs = screen.getAllByPlaceholderText("0");
     fireEvent.changeText(inputs[0], "135");
@@ -111,8 +121,9 @@ describe("ExerciseTracker Screen", () => {
     expect(screen.getByText("10")).toBeTruthy();
   });
 
-  it("increments set number after logging a set", () => {
+  it("increments set number after logging a set", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     const inputs = screen.getAllByPlaceholderText("0");
     fireEvent.changeText(inputs[0], "135");
@@ -122,8 +133,9 @@ describe("ExerciseTracker Screen", () => {
     expect(screen.getByText("Set 2")).toBeTruthy();
   });
 
-  it("logs failure flag on a set", () => {
+  it("logs failure flag on a set", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     fireEvent.press(screen.getByText("TAKEN TO FAILURE?"));
     const inputs = screen.getAllByPlaceholderText("0");
@@ -138,6 +150,7 @@ describe("ExerciseTracker Screen", () => {
     mockFinishExercise.mockResolvedValue(undefined);
 
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     const inputs = screen.getAllByPlaceholderText("0");
     fireEvent.changeText(inputs[0], "135");
@@ -147,7 +160,7 @@ describe("ExerciseTracker Screen", () => {
       fireEvent.press(screen.getByText("FINISH EXERCISE"));
     });
 
-    expect(mockFinishExercise).toHaveBeenCalledWith("flat-bench-press", [
+    expect(mockFinishExercise).toHaveBeenCalledWith("incline-bench-press", [
       { id: 1, weight: 135, reps: 10, failure: false },
     ]);
     expect(mockBack).toHaveBeenCalledTimes(1);
@@ -155,6 +168,7 @@ describe("ExerciseTracker Screen", () => {
 
   it("navigates back even with no sets logged", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     await act(async () => {
       fireEvent.press(screen.getByText("FINISH EXERCISE"));
@@ -164,8 +178,9 @@ describe("ExerciseTracker Screen", () => {
     expect(mockFinishExercise).not.toHaveBeenCalled();
   });
 
-  it("navigates back when Cancel is pressed", () => {
+  it("navigates back when Cancel is pressed", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     fireEvent.press(screen.getByText("Cancel"));
 
@@ -173,14 +188,16 @@ describe("ExerciseTracker Screen", () => {
     expect(mockFinishExercise).not.toHaveBeenCalled();
   });
 
-  it("renders the rest timer at its default duration", () => {
+  it("renders the rest timer at its default duration", async () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
     expect(screen.getByText("REST 1:00")).toBeTruthy();
   });
 
-  it("starts counting down when the rest timer is pressed", () => {
+  it("starts counting down when the rest timer is pressed", async () => {
     jest.useFakeTimers();
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     fireEvent.press(screen.getByText("REST 1:00"));
 
@@ -191,9 +208,10 @@ describe("ExerciseTracker Screen", () => {
     expect(screen.getByText("REST 0:59")).toBeTruthy();
   });
 
-  it("restarts the rest timer when pressed again", () => {
+  it("restarts the rest timer when pressed again", async () => {
     jest.useFakeTimers();
     render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
 
     fireEvent.press(screen.getByText("REST 1:00"));
 
