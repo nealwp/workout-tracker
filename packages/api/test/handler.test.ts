@@ -1,5 +1,11 @@
 process.env.AWS_LAMBDA_FUNCTION_NAME = "test";
 process.env.JWT_SECRET = "test-secret";
+// AWS_LAMBDA_FUNCTION_NAME above only exists to stop the handler from calling
+// app.listen(); it also happens to be what getStorage() uses to detect a real
+// Lambda runtime and switch to DynamoDB. Force memory storage explicitly so
+// these tests never touch real AWS infrastructure (which is flaky/fails
+// without credentials, e.g. in CI).
+process.env.STORAGE = "memory";
 
 import { before, beforeEach, describe, test } from "node:test";
 import assert from "node:assert/strict";
