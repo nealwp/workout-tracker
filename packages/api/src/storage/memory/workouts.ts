@@ -28,15 +28,15 @@ function toWorkout(item: WorkoutRecord): Workout {
   };
 }
 
-export async function createWorkout(userId: string): Promise<Workout> {
-  const workout: Workout = {
-    id: randomUUID(),
+export async function createWorkout(userId: string, workout?: Partial<Workout>): Promise<Workout> {
+  const newWorkout: Workout = {
+    id: workout?.id ?? randomUUID(),
     userId,
-    date: new Date().toISOString(),
-    exercises: [],
+    date: workout?.date ?? new Date().toISOString(),
+    exercises: workout?.exercises ?? [],
   };
-  await saveWorkout(workout);
-  return workout;
+  await saveWorkout(newWorkout);
+  return newWorkout;
 }
 
 export async function getWorkout(

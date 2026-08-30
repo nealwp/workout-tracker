@@ -17,7 +17,7 @@ export interface Storage {
   findOrCreateUser(info: GoogleUserInfo): Promise<User>;
   getUserById(userId: string): Promise<User | undefined>;
   getUserByGoogleId(googleId: string): Promise<User | undefined>;
-  createWorkout(userId: string): Promise<Workout>;
+  createWorkout(userId: string, workout?: Partial<Workout>): Promise<Workout>;
   getWorkout(userId: string, workoutId: string): Promise<Workout | undefined>;
   listWorkouts(userId: string): Promise<Workout[]>;
   saveWorkout(workout: Workout): Promise<void>;

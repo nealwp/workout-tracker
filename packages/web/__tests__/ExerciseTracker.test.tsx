@@ -32,6 +32,10 @@ beforeEach(() => {
   });
 });
 
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 describe("ExerciseTracker Screen", () => {
   it("renders the exercise name", () => {
     render(<ExerciseTracker />, { wrapper: TestWrapper });
@@ -149,5 +153,54 @@ describe("ExerciseTracker Screen", () => {
 
     expect(mockBack).toHaveBeenCalledTimes(1);
     expect(mockFinishExercise).not.toHaveBeenCalled();
+  });
+
+  it("navigates back when Cancel is pressed", () => {
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+
+    fireEvent.press(screen.getByText("Cancel"));
+
+    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockFinishExercise).not.toHaveBeenCalled();
+  });
+
+  it("renders the rest timer at its default duration", () => {
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+    expect(screen.getByText("REST 1:00")).toBeTruthy();
+  });
+
+  it("starts counting down when the rest timer is pressed", () => {
+    jest.useFakeTimers();
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+
+    fireEvent.press(screen.getByText("REST 1:00"));
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByText("REST 0:59")).toBeTruthy();
+  });
+
+  it("restarts the rest timer when pressed again", () => {
+    jest.useFakeTimers();
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+
+    fireEvent.press(screen.getByText("REST 1:00"));
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(screen.getByText("REST 0:59")).toBeTruthy();
+
+    for (let i = 0; i < 4; i++) {
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+    }
+    expect(screen.getByText("REST 0:55")).toBeTruthy();
+
+    fireEvent.press(screen.getByText("REST 0:55"));
+    expect(screen.getByText("REST 1:00")).toBeTruthy();
   });
 });

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { createWorkout, addExerciseToWorkout } from "@/lib/api/client";
+import { createWorkout, getTodayWorkout, addExerciseToWorkout } from "@/lib/api/client";
 import { EXERCISES } from "@/data/exercises";
+import type { ExerciseData } from "@irondog/shared";
 
 interface SetData {
   id: number;
@@ -30,9 +31,22 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   const [completedExercises, setCompletedExercises] = useState<CompletedExercise[]>([]);
 
   const startWorkout = async () => {
-    const workout = await createWorkout();
-    setWorkoutId(workout.id);
-    setCompletedExercises([]);
+    const existing = await getTodayWorkout();
+    if (existing) {
+      setWorkoutId(existing.id);
+      setCompletedExercises(
+        existing.exercises.map((e: ExerciseData) => ({
+          id: e.id,
+          name: e.name,
+          muscleGroup: e.muscleGroup,
+          sets: e.sets,
+        }))
+      );
+    } else {
+      const workout = await createWorkout();
+      setWorkoutId(workout.id);
+      setCompletedExercises([]);
+    }
   };
 
   const finishExercise = async (exerciseId: string, sets: SetData[]) => {

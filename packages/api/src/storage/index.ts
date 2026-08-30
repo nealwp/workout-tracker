@@ -45,6 +45,9 @@ function dynamoDbStorage(): Storage {
 }
 
 export function getStorage(): Storage {
+  if (process.env.STORAGE === "memory") {
+    return memoryStorage();
+  }
   if (process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.STORAGE === "dynamodb") {
     return dynamoDbStorage();
   }
