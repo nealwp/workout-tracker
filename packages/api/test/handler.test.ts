@@ -84,7 +84,7 @@ describe("handler", { concurrency: 1 }, () => {
 
   test("GET /workouts/today returns the workout for the current day", async () => {
     const headers = getAuthHeaders("handler-user-with-workout-unique");
-    const date = "2025-12-31";
+    const date = new Date().toLocaleDateString("en-CA");
     
     const createRes = await handler(event("POST", "/workouts", {
       headers,
