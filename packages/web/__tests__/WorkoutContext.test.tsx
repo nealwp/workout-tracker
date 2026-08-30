@@ -2,14 +2,16 @@ import React from "react";
 import { Text } from "react-native";
 import { render, act, screen } from "@testing-library/react-native";
 import { WorkoutProvider, useWorkout } from "../context/WorkoutContext";
-import { createWorkout, addExerciseToWorkout } from "@/lib/api/client";
+import { createWorkout, getTodayWorkout, addExerciseToWorkout } from "@/lib/api/client";
 
 jest.mock("@/lib/api/client", () => ({
   createWorkout: jest.fn(),
+  getTodayWorkout: jest.fn(),
   addExerciseToWorkout: jest.fn(),
 }));
 
 const mockCreateWorkout = createWorkout as jest.MockedFunction<typeof createWorkout>;
+const mockGetTodayWorkout = getTodayWorkout as jest.MockedFunction<typeof getTodayWorkout>;
 const mockAddExerciseToWorkout = addExerciseToWorkout as jest.MockedFunction<typeof addExerciseToWorkout>;
 
 let latestCtx: ReturnType<typeof useWorkout>;
@@ -42,6 +44,7 @@ describe("WorkoutContext", () => {
   });
 
   it("startWorkout sets workoutId and clears completedExercises", async () => {
+    mockGetTodayWorkout.mockResolvedValue(null);
     mockCreateWorkout.mockResolvedValue({
       id: "workout-123",
       date: "2026-08-21",
@@ -56,11 +59,42 @@ describe("WorkoutContext", () => {
 
     expect(latestCtx.workoutId).toBe("workout-123");
     expect(latestCtx.completedExercises).toEqual([]);
+    expect(mockGetTodayWorkout).toHaveBeenCalledTimes(1);
     expect(mockCreateWorkout).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId("workoutId").props.children).toBe("workout-123");
   });
 
+  it("resumes existing workout for today", async () => {
+    const existingExercises = [
+      { id: "flat-bench-press", name: "Flat Bench Press", muscleGroup: "chest", sets: [{ id: 1, weight: 135, reps: 10, failure: false }] },
+    ];
+    mockGetTodayWorkout.mockResolvedValue({
+      id: "workout-existing",
+      date: "2026-08-21",
+      exercises: existingExercises,
+    });
+
+    renderProvider();
+
+    await act(async () => {
+      await latestCtx.startWorkout();
+    });
+
+    expect(latestCtx.workoutId).toBe("workout-existing");
+    expect(latestCtx.completedExercises).toHaveLength(1);
+    expect(latestCtx.completedExercises[0]).toEqual({
+      id: "flat-bench-press",
+      name: "Flat Bench Press",
+      muscleGroup: "chest",
+      sets: [{ id: 1, weight: 135, reps: 10, failure: false }],
+    });
+    expect(mockGetTodayWorkout).toHaveBeenCalledTimes(1);
+    expect(mockCreateWorkout).not.toHaveBeenCalled();
+    expect(screen.getByTestId("workoutId").props.children).toBe("workout-existing");
+  });
+
   it("finishExercise adds exercise to completedExercises and calls API", async () => {
+    mockGetTodayWorkout.mockResolvedValue(null);
     mockCreateWorkout.mockResolvedValue({
       id: "workout-456",
       date: "2026-08-21",
@@ -115,6 +149,7 @@ describe("WorkoutContext", () => {
   });
 
   it("finishExercise does nothing if exerciseId is invalid", async () => {
+    mockGetTodayWorkout.mockResolvedValue(null);
     mockCreateWorkout.mockResolvedValue({
       id: "workout-789",
       date: "2026-08-21",
@@ -138,6 +173,7 @@ describe("WorkoutContext", () => {
   });
 
   it("accumulates multiple completed exercises", async () => {
+    mockGetTodayWorkout.mockResolvedValue(null);
     mockCreateWorkout.mockResolvedValue({
       id: "workout-abc",
       date: "2026-08-21",
@@ -169,6 +205,7 @@ describe("WorkoutContext", () => {
   });
 
   it("resets state on new workout", async () => {
+    mockGetTodayWorkout.mockResolvedValue(null);
     mockCreateWorkout.mockResolvedValue({
       id: "workout-1",
       date: "2026-08-21",

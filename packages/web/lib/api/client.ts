@@ -1,4 +1,4 @@
-import type { ExerciseData } from "@irondog/shared";
+import type { ExerciseData, Workout } from "@irondog/shared";
 import { tokenStore } from "@/lib/secureStore";
 import { API_BASE_URL } from "../config";
 
@@ -88,9 +88,18 @@ export async function signOutServer(refreshToken: string) {
 }
 
 export async function createWorkout() {
+  const date = new Date().toLocaleDateString("en-CA");
   const res = await authFetch("/workouts", {
     method: "POST",
+    body: JSON.stringify({ date }),
   });
+  return res.json();
+}
+
+export async function getTodayWorkout(): Promise<Workout | null> {
+  const date = new Date().toLocaleDateString("en-CA");
+  const res = await authFetch(`/workouts/today?date=${date}`);
+  if (res.status === 404) return null;
   return res.json();
 }
 
