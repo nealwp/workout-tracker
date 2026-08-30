@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, act, screen } from "@testing-library/react-native";
 import ExerciseTracker from "../app/workout/exercise";
 import { useWorkout } from "../context/WorkoutContext";
+import { getLastExercisePerformance } from "@/lib/api/client";
 import { TestWrapper } from "./helpers/TestWrapper";
 
 const mockBack = jest.fn();
@@ -17,9 +18,16 @@ jest.mock("../context/WorkoutContext", () => ({
   useWorkout: jest.fn(),
 }));
 
+jest.mock("@/lib/api/client", () => ({
+  getLastExercisePerformance: jest.fn(),
+}));
+
 const mockFinishExercise = jest.fn();
 const mockUseWorkout = useWorkout as jest.MockedFunction<typeof useWorkout>;
 const mockUseLocalSearchParams = require("expo-router").useLocalSearchParams as jest.Mock;
+const mockGetLastExercisePerformance = getLastExercisePerformance as jest.MockedFunction<
+  typeof getLastExercisePerformance
+>;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -30,6 +38,7 @@ beforeEach(() => {
     startWorkout: jest.fn(),
     finishExercise: mockFinishExercise,
   });
+  mockGetLastExercisePerformance.mockResolvedValue(null);
 });
 
 afterEach(() => {
@@ -98,8 +107,8 @@ describe("ExerciseTracker Screen", () => {
     fireEvent.press(screen.getByText("LOG SET"));
 
     expect(screen.getByText("COMPLETED SETS")).toBeTruthy();
-    expect(screen.getByText("Set 1")).toBeTruthy();
     expect(screen.getByText("135 lbs")).toBeTruthy();
+    expect(screen.getByText("10")).toBeTruthy();
   });
 
   it("increments set number after logging a set", () => {
@@ -122,7 +131,7 @@ describe("ExerciseTracker Screen", () => {
     fireEvent.changeText(inputs[1], "6");
     fireEvent.press(screen.getByText("LOG SET"));
 
-    expect(screen.getByText("FAIL")).toBeTruthy();
+    expect(screen.getByText("✓")).toBeTruthy();
   });
 
   it("calls finishExercise and navigates back on FINISH EXERCISE", async () => {
@@ -202,5 +211,62 @@ describe("ExerciseTracker Screen", () => {
 
     fireEvent.press(screen.getByText("REST 0:55"));
     expect(screen.getByText("REST 1:00")).toBeTruthy();
+  });
+
+  describe("Last Time section", () => {
+    beforeEach(() => {
+      mockUseLocalSearchParams.mockReturnValue({ exerciseId: "cable-chest-press" });
+    });
+
+    it("does not render when there is no previous performance", async () => {
+      mockGetLastExercisePerformance.mockResolvedValue(null);
+
+      render(<ExerciseTracker />, { wrapper: TestWrapper });
+      await act(async () => {});
+
+      expect(screen.queryByText(/LAST TIME/)).toBeNull();
+    });
+
+    it("renders a collapsed trigger with the previous date when history exists", async () => {
+      mockGetLastExercisePerformance.mockResolvedValue({
+        date: "2026-08-15",
+        exercise: {
+          id: "cable-chest-press",
+          name: "Cable Chest Press",
+          muscleGroup: "chest",
+          sets: [{ id: 1, weight: 100, reps: 10, failure: false }],
+        },
+      });
+
+      render(<ExerciseTracker />, { wrapper: TestWrapper });
+      await act(async () => {});
+
+      expect(screen.getByText(/LAST TIME/)).toBeTruthy();
+      expect(screen.queryByText("100 lbs")).toBeNull();
+    });
+
+    it("expands to show the set table when the trigger is pressed", async () => {
+      mockGetLastExercisePerformance.mockResolvedValue({
+        date: "2026-08-15",
+        exercise: {
+          id: "cable-chest-press",
+          name: "Cable Chest Press",
+          muscleGroup: "chest",
+          sets: [
+            { id: 1, weight: 100, reps: 10, failure: false },
+            { id: 2, weight: 95, reps: 8, failure: true },
+          ],
+        },
+      });
+
+      render(<ExerciseTracker />, { wrapper: TestWrapper });
+      await act(async () => {});
+
+      fireEvent.press(screen.getByText(/LAST TIME/));
+
+      expect(screen.getByText("100 lbs")).toBeTruthy();
+      expect(screen.getByText("95 lbs")).toBeTruthy();
+      expect(screen.getByText("✓")).toBeTruthy();
+    });
   });
 });

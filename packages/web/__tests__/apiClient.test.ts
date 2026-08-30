@@ -1,4 +1,12 @@
-import { createWorkout, addExerciseToWorkout, signInWithGoogle, fetchMe, signOutServer, AuthError } from "@/lib/api/client";
+import {
+  createWorkout,
+  addExerciseToWorkout,
+  getLastExercisePerformance,
+  signInWithGoogle,
+  fetchMe,
+  signOutServer,
+  AuthError,
+} from "@/lib/api/client";
 import { tokenStore } from "../lib/secureStore";
 
 const mockFetch = jest.fn();
@@ -139,6 +147,55 @@ describe("API Client", () => {
           sets: [],
         })
       ).rejects.toThrow("Server error");
+    });
+  });
+
+  describe("getLastExercisePerformance", () => {
+    it("sends GET request to /workouts/exercise/:exerciseId/last with auth header", async () => {
+      const mockResponse = {
+        date: "2026-08-15",
+        exercise: {
+          id: "flat-bench-press",
+          name: "Flat Bench Press",
+          muscleGroup: "chest",
+          sets: [{ id: 1, weight: 135, reps: 10, failure: false }],
+        },
+      };
+      mockFetch.mockResolvedValue({
+        status: 200,
+        json: () => Promise.resolve(mockResponse),
+      });
+
+      const result = await getLastExercisePerformance("flat-bench-press");
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/workouts/exercise/flat-bench-press/last",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+          }),
+        })
+      );
+      expect(result).toEqual(mockResponse);
+    });
+
+    it("returns null when no previous performance exists (404)", async () => {
+      mockFetch.mockResolvedValue({
+        status: 404,
+        json: () => Promise.resolve({ error: "No previous workout found for this exercise" }),
+      });
+
+      const result = await getLastExercisePerformance("flat-bench-press");
+
+      expect(result).toBeNull();
+    });
+
+    it("propagates fetch errors", async () => {
+      mockFetch.mockRejectedValue(new Error("Network error"));
+
+      await expect(getLastExercisePerformance("flat-bench-press")).rejects.toThrow(
+        "Network error"
+      );
     });
   });
 

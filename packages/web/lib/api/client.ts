@@ -1,4 +1,4 @@
-import type { ExerciseData, Workout } from "@irondog/shared";
+import type { ExerciseData, LastExercisePerformance, Workout } from "@irondog/shared";
 import { tokenStore } from "@/lib/secureStore";
 import { API_BASE_URL } from "../config";
 
@@ -111,5 +111,13 @@ export async function addExerciseToWorkout(
     method: "POST",
     body: JSON.stringify(exercise),
   });
+  return res.json();
+}
+
+export async function getLastExercisePerformance(
+  exerciseId: string
+): Promise<LastExercisePerformance | null> {
+  const res = await authFetch(`/workouts/exercise/${exerciseId}/last`);
+  if (res.status === 404) return null;
   return res.json();
 }

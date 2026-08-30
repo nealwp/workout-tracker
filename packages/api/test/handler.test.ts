@@ -88,6 +88,70 @@ describe("handler", { concurrency: 1 }, () => {
     assert.equal(parseBody(res).error, "Missing or invalid date parameter (YYYY-MM-DD format)");
   });
 
+  test("GET /workouts/exercise/:exerciseId/last returns 404 when no history exists", async () => {
+    const headers = getAuthHeaders("handler-user-no-exercise-history");
+    const res = await handler(
+      event("GET", "/workouts/exercise/bench-press/last", { headers })
+    );
+    assert.equal(res.statusCode, 404);
+    assert.equal(parseBody(res).error, "No previous workout found for this exercise");
+  });
+
+  test("GET /workouts/exercise/:exerciseId/last returns the most recent matching exercise", async () => {
+    const headers = getAuthHeaders("handler-user-exercise-history");
+
+    const olderRes = await handler(
+      event("POST", "/workouts", { headers, body: JSON.stringify({ date: "2026-08-01" }) })
+    );
+    const olderWorkout = parseBody(olderRes);
+    await handler(
+      event("POST", `/workouts/${olderWorkout.id}/exercises`, {
+        headers,
+        body: JSON.stringify({
+          id: "bench-press",
+          name: "Bench Press",
+          muscleGroup: "chest",
+          sets: [{ id: 1, weight: 100, reps: 8, failure: false }],
+        }),
+      })
+    );
+
+    const newerRes = await handler(
+      event("POST", "/workouts", { headers, body: JSON.stringify({ date: "2026-08-15" }) })
+    );
+    const newerWorkout = parseBody(newerRes);
+    await handler(
+      event("POST", `/workouts/${newerWorkout.id}/exercises`, {
+        headers,
+        body: JSON.stringify({
+          id: "bench-press",
+          name: "Bench Press",
+          muscleGroup: "chest",
+          sets: [
+            { id: 1, weight: 110, reps: 6, failure: false },
+            { id: 2, weight: 110, reps: 5, failure: true },
+          ],
+        }),
+      })
+    );
+
+    const res = await handler(
+      event("GET", "/workouts/exercise/bench-press/last", { headers })
+    );
+    assert.equal(res.statusCode, 200);
+    const body = parseBody(res);
+    assert.equal(body.date, "2026-08-15");
+    assert.deepEqual(body.exercise, {
+      id: "bench-press",
+      name: "Bench Press",
+      muscleGroup: "chest",
+      sets: [
+        { id: 1, weight: 110, reps: 6, failure: false },
+        { id: 2, weight: 110, reps: 5, failure: true },
+      ],
+    });
+  });
+
   test("GET /workouts/today returns the workout for the current day", async () => {
     const headers = getAuthHeaders("handler-user-with-workout-unique");
     const date = new Date().toLocaleDateString("en-CA");

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AnimatePresence, Button, H1, H2, ScrollView, XStack, YStack, useTheme } from "tamagui";
+import { AnimatePresence, Button, H1, ScrollView, XStack, YStack, useTheme } from "tamagui";
+import { ExercisesTable } from "@/components/ExercisesTable";
 import { EXERCISES, MUSCLE_GROUPS, type MuscleGroup } from "@/data/exercises";
 import { useWorkout } from "../../context/WorkoutContext";
 
@@ -90,71 +91,27 @@ export default function SelectExercise() {
               bg="transparent"
               px="$0"
               py="$0"
-              justify="flex-start"
+              justify="space-between"
+              items="center"
               pressStyle={{ opacity: 0.7 }}
             >
               <Button.Text color="$color" fontSize={20} fontWeight="bold">
-                Completed Exercises <MaterialIcons name={completedExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={20} color={theme.gray11?.val ?? "#aaa"} />
+                Completed Exercises
               </Button.Text>
+              <MaterialIcons
+                name={completedExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                size={20}
+                color={theme.gray11?.val ?? "#aaa"}
+              />
             </Button>
             <AnimatePresence>
               {completedExpanded && (
                 <YStack
                   key="completed-table"
-                  bg="$gray4"
-                  rounded="$4"
-                  overflow="hidden"
                   enterStyle={{ opacity: 0, height: 0 }}
                   exitStyle={{ opacity: 0, height: 0 }}
                 >
-                  <XStack
-                    py="$2"
-                    px="$4"
-                    borderBottomWidth={1}
-                    borderBottomColor="$gray6"
-                  >
-<H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
-                        EXERCISE
-                      </H2>
-                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
-                        MUSCLE
-                      </H2>
-                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={1}>
-                        SETS
-                      </H2>
-                      <H2 color="$gray11" fontSize={11} fontWeight="600" flex={2}>
-                        BEST SET
-                      </H2>
-                  </XStack>
-                  {completedExercises.map((exercise) => {
-                    const bestSet = exercise.sets.reduce(
-                      (best, s) => (!best || s.weight > best.weight ? s : best),
-                      null as typeof exercise.sets[0] | null
-                    );
-                    return (
-                      <XStack
-                        key={exercise.id}
-                        py="$2"
-                        px="$4"
-                        items="center"
-                        borderBottomWidth={1}
-                        borderBottomColor="$gray5"
-                      >
-                        <H2 color="$color" fontSize={13} fontWeight="600" flex={2}>
-                          {exercise.name}
-                        </H2>
-                        <H2 color="$gray11" fontSize={12} flex={2}>
-                          {exercise.muscleGroup}
-                        </H2>
-                        <H2 color="$color" fontSize={13} flex={1}>
-                          {exercise.sets.length}
-                        </H2>
-                        <H2 color="$color" fontSize={13} flex={2}>
-                          {bestSet ? `${bestSet.weight}×${bestSet.reps}` : "—"}
-                        </H2>
-                      </XStack>
-                    );
-                  })}
+                  <ExercisesTable exercises={completedExercises} />
                 </YStack>
               )}
             </AnimatePresence>
