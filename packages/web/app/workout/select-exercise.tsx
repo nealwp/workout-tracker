@@ -19,12 +19,12 @@ export default function SelectExercise() {
 
   return (
     <ScrollView flex={1} bg="$background">
-      <YStack p="$4" gap="$4">
-        <H1 color="$color" fontSize={20} fontWeight="bold">
+      <YStack p="$3" gap="$3">
+        <H1 color="$color" fontSize={18} fontWeight="bold">
           Choose Muscle Group
         </H1>
 
-        <XStack flexWrap="wrap" gap="$3">
+        <XStack flexWrap="wrap" gap="$2">
           {MUSCLE_GROUPS.map((group) => (
             <Button
               key={group.id}
@@ -32,8 +32,8 @@ export default function SelectExercise() {
               bg={selectedGroup === group.id ? "$red10" : "$gray5"}
               borderWidth={2}
               borderColor={selectedGroup === group.id ? "$red10" : "$gray6"}
-              py="$4"
-              px="$5"
+              py="$2.5"
+              px="$4"
               rounded="$4"
               pressStyle={{ opacity: 0.8 }}
               flex={1}
@@ -41,7 +41,7 @@ export default function SelectExercise() {
             >
               <Button.Text
                 color={selectedGroup === group.id ? "white" : "$gray12"}
-                fontSize={16}
+                fontSize={15}
                 fontWeight="600"
                 style={{ textAlign: "center" }}
               >
@@ -52,11 +52,11 @@ export default function SelectExercise() {
         </XStack>
 
         {selectedGroup && (
-          <YStack gap="$3">
-            <H1 color="$color" fontSize={20} fontWeight="bold">
+          <YStack gap="$2">
+            <H1 color="$color" fontSize={18} fontWeight="bold">
               Choose Exercise
             </H1>
-            <YStack gap="$2">
+            <YStack gap="$1.5">
               {filteredExercises.map((exercise) => (
                 <Button
                   key={exercise.id}
@@ -69,13 +69,13 @@ export default function SelectExercise() {
                   bg="$gray4"
                   borderWidth={1}
                   borderColor="$gray6"
-                  py="$4"
-                  px="$5"
+                  py="$2.5"
+                  px="$4"
                   rounded="$4"
                   pressStyle={{ opacity: 0.8 }}
                   justify="flex-start"
                 >
-                  <Button.Text color="$gray12" fontSize={16}>
+                  <Button.Text color="$gray12" fontSize={15}>
                     {exercise.name}
                   </Button.Text>
                 </Button>
@@ -85,7 +85,7 @@ export default function SelectExercise() {
         )}
 
         {completedExercises.length > 0 && (
-          <YStack gap="$2">
+          <YStack gap="$1.5">
             <Button
               onPress={() => setCompletedExpanded(!completedExpanded)}
               bg="transparent"
@@ -95,7 +95,7 @@ export default function SelectExercise() {
               items="center"
               pressStyle={{ opacity: 0.7 }}
             >
-              <Button.Text color="$color" fontSize={20} fontWeight="bold">
+              <Button.Text color="$color" fontSize={18} fontWeight="bold">
                 Completed Exercises
               </Button.Text>
               <MaterialIcons
