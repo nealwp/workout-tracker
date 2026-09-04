@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, usePathname, useRouter } from "expo-router";
-import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
+import { Button, Paragraph, TamaguiProvider, Text, XStack, YStack, AnimatePresence } from "tamagui";
 import { Ionicons } from "@expo/vector-icons";
 import { tamaguiConfig, DARK_BACKGROUND } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
@@ -15,7 +15,6 @@ if (Platform.OS !== "web") {
 
 function TopBar() {
   const { user, signOut } = useAuth();
-  const router = useRouter();
   const colorScheme = useColorScheme();
   const [open, setOpen] = useState(false);
 
@@ -100,17 +99,6 @@ function TopBar() {
               ))}
               <Button
                 chromeless
-                onPress={() => { setOpen(false); router.push("/history"); }}
-                px="$4"
-                py="$3"
-                style={{ justifyContent: "flex-start" }}
-              >
-                <Button.Text color="$gray12" fontSize={14}>
-                  History
-                </Button.Text>
-              </Button>
-              <Button
-                chromeless
                 onPress={() => { setOpen(false); signOut(); }}
                 px="$4"
                 py="$3"
@@ -139,25 +127,36 @@ function BottomBar() {
       bg="$gray4"
       py="$3"
       px="$4"
-      justify="center"
       items="center"
-      gap="$12"
       borderTopWidth={1}
       borderTopColor="$gray7"
     >
+      <XStack flex={1} justify="center">
+        <Pressable onPress={() => router.push("/history")}>
+          <YStack items="center" gap="$1">
+            <Ionicons
+              name="list"
+              size={32}
+              color={location === "/history" ? "#ff4444" : "#999"}
+            />
+            <Text
+              fontSize={10}
+              fontWeight="600"
+              letterSpacing={0.5}
+              color={location === "/history" ? "#ff4444" : "#999"}
+            >
+              HISTORY
+            </Text>
+          </YStack>
+        </Pressable>
+      </XStack>
       <Pressable onPress={() => router.push("/")}>
         <Image
           source={require("../assets/images/irondog-logo-no-text.png")}
           style={{ width: 48, height: 48, borderRadius: 24 }}
         />
       </Pressable>
-      <Pressable onPress={() => router.push("/history")}>
-        <Ionicons
-          name="list"
-          size={40}
-          color={location === "/history" ? "#ff4444" : "#999"}
-        />
-      </Pressable>
+      <XStack flex={1} />
     </XStack>
   );
 }
