@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack, usePathname, useRouter } from "expo-router";
@@ -163,7 +163,14 @@ function BottomBar() {
 
 function AppContent() {
   const { user, isLoading } = useAuth();
+  const router = useRouter();
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    if (user || isLoading) return;
+    router.dismissAll();
+    router.replace("/");
+  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
