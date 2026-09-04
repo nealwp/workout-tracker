@@ -2,6 +2,7 @@ import {
   createWorkout,
   addExerciseToWorkout,
   getLastExercisePerformance,
+  listWorkouts,
   signInWithGoogle,
   fetchMe,
   signOutServer,
@@ -196,6 +197,53 @@ describe("API Client", () => {
       await expect(getLastExercisePerformance("flat-bench-press")).rejects.toThrow(
         "Network error"
       );
+    });
+  });
+
+  describe("listWorkouts", () => {
+    it("sends GET request to /workouts with auth header and default page size", async () => {
+      const mockPage = {
+        items: [
+          {
+            id: "w1",
+            userId: "u1",
+            date: "2026-08-21",
+            exercises: [{ id: "flat-bench-press", name: "Flat Bench Press", muscleGroup: "chest", sets: [] }],
+          },
+        ],
+        nextCursor: null,
+      };
+      mockFetch.mockResolvedValue({ json: () => Promise.resolve(mockPage) });
+
+      const result = await listWorkouts();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/workouts?limit=25",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+          }),
+        })
+      );
+      expect(result).toEqual(mockPage);
+    });
+
+    it("passes limit and cursor as query params", async () => {
+      const mockPage = { items: [], nextCursor: null };
+      mockFetch.mockResolvedValue({ json: () => Promise.resolve(mockPage) });
+
+      await listWorkouts({ limit: 50, cursor: "abc123" });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/workouts?limit=50&cursor=abc123",
+        expect.anything()
+      );
+    });
+
+    it("propagates fetch errors", async () => {
+      mockFetch.mockRejectedValue(new Error("Network error"));
+
+      await expect(listWorkouts()).rejects.toThrow("Network error");
     });
   });
 

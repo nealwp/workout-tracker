@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack, useRouter } from "expo-router";
-import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
+import { Stack, usePathname, useRouter } from "expo-router";
+import { Button, Paragraph, TamaguiProvider, Text, XStack, YStack, AnimatePresence } from "tamagui";
+import { Ionicons } from "@expo/vector-icons";
 import { tamaguiConfig, DARK_BACKGROUND } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
@@ -82,7 +83,7 @@ function TopBar() {
               >
                 {user.name}
               </Paragraph>
-              {["History", "Stats", "Settings"].map((label) => (
+              {(["Stats", "Settings"] as const).map((label) => (
                 <Button
                   key={label}
                   chromeless
@@ -119,23 +120,43 @@ function TopBar() {
 
 function BottomBar() {
   const router = useRouter();
+  const location = usePathname();
 
   return (
     <XStack
       bg="$gray4"
       py="$3"
       px="$4"
-      justify="center"
       items="center"
       borderTopWidth={1}
       borderTopColor="$gray7"
     >
+      <XStack flex={1} justify="center">
+        <Pressable onPress={() => router.push("/history")}>
+          <YStack items="center" gap="$1">
+            <Ionicons
+              name="list"
+              size={32}
+              color={location === "/history" ? "#ff4444" : "#999"}
+            />
+            <Text
+              fontSize={10}
+              fontWeight="600"
+              letterSpacing={0.5}
+              color={location === "/history" ? "#ff4444" : "#999"}
+            >
+              HISTORY
+            </Text>
+          </YStack>
+        </Pressable>
+      </XStack>
       <Pressable onPress={() => router.push("/")}>
         <Image
           source={require("../assets/images/irondog-logo-no-text.png")}
           style={{ width: 48, height: 48, borderRadius: 24 }}
         />
       </Pressable>
+      <XStack flex={1} />
     </XStack>
   );
 }

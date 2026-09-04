@@ -1,4 +1,4 @@
-import type { ExerciseData, LastExercisePerformance, Workout } from "@irondog/shared";
+import type { ExerciseData, LastExercisePerformance, Workout, WorkoutsPage } from "@irondog/shared";
 import { tokenStore } from "@/lib/secureStore";
 import { API_BASE_URL } from "../config";
 
@@ -93,6 +93,18 @@ export async function createWorkout() {
     method: "POST",
     body: JSON.stringify({ date }),
   });
+  return res.json();
+}
+
+export async function listWorkouts(
+  options: { limit?: number; cursor?: string | null } = {}
+): Promise<WorkoutsPage> {
+  const params = new URLSearchParams();
+  const limit = options.limit ?? 25;
+  if (limit) params.set("limit", String(limit));
+  if (options.cursor) params.set("cursor", options.cursor);
+  const query = params.toString();
+  const res = await authFetch(`/workouts${query ? `?${query}` : ""}`);
   return res.json();
 }
 

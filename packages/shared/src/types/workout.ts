@@ -23,3 +23,8 @@ export interface LastExercisePerformance {
   date: string;
   exercise: ExerciseData;
 }
+
+export interface WorkoutsPage {
+  items: Workout[];
+  nextCursor: string | null;
+}

@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
-import type { Workout, ExerciseData } from "@irondog/shared";
+import type { Workout, ExerciseData, WorkoutsPage } from "@irondog/shared";
+import { decodeCursor, cursorFromWorkout } from "../cursor";
+import type { ListWorkoutsOptions } from "../types";
 
 export interface WorkoutRecord {
   userId: string;
@@ -47,10 +49,39 @@ export async function getWorkout(
   return item ? toWorkout(item) : undefined;
 }
 
-export async function listWorkouts(userId: string): Promise<Workout[]> {
+function sortedForUser(userId: string): WorkoutRecord[] {
   return workouts
     .filter((w) => w.userId === userId)
-    .sort((a, b) => b.date.localeCompare(a.date))
+    .sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+}
+
+export async function listWorkouts(
+  userId: string,
+  options: ListWorkoutsOptions = {}
+): Promise<WorkoutsPage> {
+  const limit = options.limit ?? 25;
+  const sorted = sortedForUser(userId);
+
+  let start = 0;
+  if (options.cursor) {
+    const key = decodeCursor(options.cursor);
+    if (key.userId !== userId) throw new Error("Invalid cursor");
+    const index = sorted.findIndex((w) => w.date === key.date && w.id === key.id);
+    if (index >= 0) start = index + 1;
+  }
+
+  const items = sorted.slice(start, start + limit).map(toWorkout);
+  const nextCursor =
+    start + items.length < sorted.length && items.length > 0
+      ? cursorFromWorkout(items[items.length - 1])
+      : null;
+
+  return { items, nextCursor };
+}
+
+export async function listWorkoutsForDate(userId: string, date: string): Promise<Workout[]> {
+  return sortedForUser(userId)
+    .filter((w) => w.date.startsWith(date))
     .map(toWorkout);
 }
 
