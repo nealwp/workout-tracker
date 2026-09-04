@@ -27,7 +27,7 @@ describe("seedHistoricalWorkouts", () => {
 
     assert.ok(count > 0);
     const workouts = await listWorkouts("local-user");
-    assert.equal(workouts.length, count);
+    assert.equal(workouts.items.length, count);
   });
 
   it("seeded workouts include exercises with sets and failure flags", async () => {
@@ -44,7 +44,7 @@ describe("seedHistoricalWorkouts", () => {
     await seedHistoricalWorkouts({ createWorkout }, "local-user");
 
     const otherUsersWorkouts = await listWorkouts("someone-else");
-    assert.deepEqual(otherUsersWorkouts, []);
+    assert.deepEqual(otherUsersWorkouts.items, []);
   });
 
   it("is idempotent when called twice for the same user", async () => {
@@ -53,6 +53,6 @@ describe("seedHistoricalWorkouts", () => {
 
     assert.equal(firstCount, secondCount);
     const workouts = await listWorkouts("local-user");
-    assert.equal(workouts.length, firstCount);
+    assert.equal(workouts.items.length, firstCount);
   });
 });

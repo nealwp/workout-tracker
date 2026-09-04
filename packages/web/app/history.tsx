@@ -54,14 +54,19 @@ const columns: DataTableColumn<Workout>[] = [
 export default function History() {
   const router = useRouter();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     listWorkouts()
-      .then((result) => {
-        if (!cancelled) setWorkouts(result);
+      .then((page) => {
+        if (!cancelled) {
+          setWorkouts(page.items);
+          setNextCursor(page.nextCursor);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -70,6 +75,34 @@ export default function History() {
       cancelled = true;
     };
   }, []);
+
+  const loadMore = async () => {
+    if (loadingMore || !nextCursor) return;
+    setLoadingMore(true);
+    try {
+      const page = await listWorkouts({ cursor: nextCursor });
+      setWorkouts((prev) => {
+        const seen = new Set(prev.map((w) => w.id));
+        return [...prev, ...page.items.filter((w) => !seen.has(w.id))];
+      });
+      setNextCursor(page.nextCursor);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const onScroll = (event: {
+    nativeEvent: {
+      layoutMeasurement: { height: number };
+      contentOffset: { y: number };
+      contentSize: { height: number };
+    };
+  }) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 120) {
+      loadMore();
+    }
+  };
 
   const renderExpanded = (workout: Workout) => (
     <YStack bg="$gray5" pb="$3" borderBottomWidth={1} borderBottomColor="$gray5">
@@ -101,7 +134,7 @@ export default function History() {
   );
 
   return (
-    <ScrollView flex={1} bg="$background">
+    <ScrollView flex={1} bg="$background" onScroll={onScroll} scrollEventThrottle={16}>
       <YStack p="$4" gap="$4">
         <Button
           onPress={() => router.back()}
@@ -135,16 +168,23 @@ export default function History() {
             No workouts yet.
           </Paragraph>
         ) : (
-          <DataTable
-            columns={columns}
-            data={workouts}
-            keyExtractor={(workout) => workout.id}
-            expandedKey={expandedId}
-            onToggle={(workout) =>
-              setExpandedId((prev) => (prev === workout.id ? null : workout.id))
-            }
-            renderExpanded={renderExpanded}
-          />
+          <>
+            <DataTable
+              columns={columns}
+              data={workouts}
+              keyExtractor={(workout) => workout.id}
+              expandedKey={expandedId}
+              onToggle={(workout) =>
+                setExpandedId((prev) => (prev === workout.id ? null : workout.id))
+              }
+              renderExpanded={renderExpanded}
+            />
+            {loadingMore && (
+              <Paragraph color="$gray11" fontSize={14} alignSelf="center">
+                Loading...
+              </Paragraph>
+            )}
+          </>
         )}
       </YStack>
     </ScrollView>

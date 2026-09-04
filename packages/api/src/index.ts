@@ -210,7 +210,7 @@ app.get("/workouts/today", requireAuth, async (req, res) => {
       res.status(400).json({ error: "Missing or invalid date parameter (YYYY-MM-DD format)" });
       return;
     }
-    const userWorkouts = await storage.listWorkouts(req.userId!);
+    const userWorkouts = await storage.listWorkoutsForDate(req.userId!, date);
     const todaysWorkout = userWorkouts.find((w) => w.date && w.date.startsWith(date));
     if (!todaysWorkout) {
       res.status(404).json({ error: "No workout for today" });
@@ -224,20 +224,40 @@ app.get("/workouts/today", requireAuth, async (req, res) => {
 });
 
 app.get("/workouts", requireAuth, async (req, res) => {
-  const userWorkouts = await storage.listWorkouts(req.userId!);
-  res.json(userWorkouts);
+  try {
+    const rawLimit = req.query.limit;
+    const limit =
+      typeof rawLimit === "string" && /^\d+$/.test(rawLimit)
+        ? Math.min(Math.max(parseInt(rawLimit, 10), 1), 100)
+        : 25;
+    const cursor = typeof req.query.cursor === "string" ? req.query.cursor : null;
+    const page = await storage.listWorkouts(req.userId!, { limit, cursor });
+    res.json(page);
+  } catch (err) {
+    logger.error("list workouts error", { path: req.path }, err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.get("/workouts/exercise/:exerciseId/last", requireAuth, async (req, res) => {
-  const userWorkouts = await storage.listWorkouts(req.userId!);
-  for (const workout of userWorkouts) {
-    const exercise = workout.exercises.find((e) => e.id === req.params.exerciseId);
-    if (exercise) {
-      res.json({ date: workout.date, exercise });
-      return;
-    }
+  try {
+    let cursor: string | null = null;
+    do {
+      const page = await storage.listWorkouts(req.userId!, { limit: 50, cursor });
+      for (const workout of page.items) {
+        const exercise = workout.exercises.find((e) => e.id === req.params.exerciseId);
+        if (exercise) {
+          res.json({ date: workout.date, exercise });
+          return;
+        }
+      }
+      cursor = page.nextCursor;
+    } while (cursor);
+    res.status(404).json({ error: "No previous workout found for this exercise" });
+  } catch (err) {
+    logger.error("get last exercise performance error", { path: req.path }, err);
+    res.status(500).json({ error: "Internal server error" });
   }
-  res.status(404).json({ error: "No previous workout found for this exercise" });
 });
 
 app.get("/workouts/:id", requireAuth, async (req, res) => {

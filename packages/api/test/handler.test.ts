@@ -170,4 +170,35 @@ describe("handler", { concurrency: 1 }, () => {
     assert.equal(foundWorkout.id, createdWorkout.id);
     assert.equal(foundWorkout.date, date);
   });
+
+  test("GET /workouts pages through workouts with limit and cursor", async () => {
+    const headers = getAuthHeaders("handler-user-paged");
+
+    for (const day of ["2026-08-01", "2026-08-02", "2026-08-03", "2026-08-04", "2026-08-05"]) {
+      const createRes = await handler(event("POST", "/workouts", { headers, body: JSON.stringify({ date: day }) }));
+      assert.equal(createRes.statusCode, 201);
+    }
+
+    const firstRes = await handler(event("GET", "/workouts?limit=2", { headers }));
+    assert.equal(firstRes.statusCode, 200);
+    const firstPage = parseBody(firstRes) as { items: { date: string }[]; nextCursor: string | null };
+    assert.equal(firstPage.items.length, 2);
+    assert.deepEqual(firstPage.items.map((w) => w.date), ["2026-08-05", "2026-08-04"]);
+    assert.ok(firstPage.nextCursor);
+
+    const secondRes = await handler(
+      event("GET", `/workouts?limit=2&cursor=${encodeURIComponent(firstPage.nextCursor!)}`, { headers })
+    );
+    const secondPage = parseBody(secondRes) as { items: { date: string }[]; nextCursor: string | null };
+    assert.equal(secondPage.items.length, 2);
+    assert.deepEqual(secondPage.items.map((w) => w.date), ["2026-08-03", "2026-08-02"]);
+
+    const thirdRes = await handler(
+      event("GET", `/workouts?limit=2&cursor=${encodeURIComponent(secondPage.nextCursor!)}`, { headers })
+    );
+    const thirdPage = parseBody(thirdRes) as { items: { date: string }[]; nextCursor: string | null };
+    assert.equal(thirdPage.items.length, 1);
+    assert.equal(thirdPage.items[0].date, "2026-08-01");
+    assert.equal(thirdPage.nextCursor, null);
+  });
 });

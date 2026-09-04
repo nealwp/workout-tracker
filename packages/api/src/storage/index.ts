@@ -4,6 +4,7 @@ import {
   createWorkout,
   getWorkout,
   listWorkouts,
+  listWorkoutsForDate,
   saveWorkout,
   deleteWorkout,
 } from "./memory/workouts";
@@ -20,6 +21,7 @@ function memoryStorage(): Storage {
     createWorkout,
     getWorkout,
     listWorkouts,
+    listWorkoutsForDate,
     saveWorkout,
     deleteWorkout,
     storeRefreshToken,
@@ -36,6 +38,7 @@ function dynamoDbStorage(): Storage {
     createWorkout: dynamodbWorkouts.createWorkout,
     getWorkout: dynamodbWorkouts.getWorkout,
     listWorkouts: dynamodbWorkouts.listWorkouts,
+    listWorkoutsForDate: dynamodbWorkouts.listWorkoutsForDate,
     saveWorkout: dynamodbWorkouts.saveWorkout,
     deleteWorkout: dynamodbWorkouts.deleteWorkout,
     storeRefreshToken: dynamodbRefreshTokens.storeRefreshToken,

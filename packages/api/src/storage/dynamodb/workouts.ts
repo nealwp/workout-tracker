@@ -5,8 +5,10 @@ import {
   PutCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import type { Workout, ExerciseData } from "@irondog/shared";
+import type { Workout, ExerciseData, WorkoutsPage } from "@irondog/shared";
 import { docClient } from "./shared";
+import { decodeCursor, encodeCursor, type CursorKey } from "../cursor";
+import type { ListWorkoutsOptions } from "../types";
 
 export const WORKOUTS_TABLE = "irondog-workouts";
 export const DATE_INDEX = "date-index";
@@ -60,13 +62,49 @@ export async function getWorkout(
   return result.Item ? toWorkout(result.Item as unknown as WorkoutRecord) : undefined;
 }
 
-export async function listWorkouts(userId: string): Promise<Workout[]> {
+export async function listWorkouts(
+  userId: string,
+  options: ListWorkoutsOptions = {}
+): Promise<WorkoutsPage> {
+  const limit = options.limit ?? 25;
+  const params: {
+    TableName: string;
+    IndexName: string;
+    KeyConditionExpression: string;
+    ExpressionAttributeValues: Record<string, string>;
+    ScanIndexForward: boolean;
+    Limit: number;
+    ExclusiveStartKey?: Record<string, string>;
+  } = {
+    TableName: WORKOUTS_TABLE,
+    IndexName: DATE_INDEX,
+    KeyConditionExpression: "userId = :u",
+    ExpressionAttributeValues: { ":u": userId },
+    ScanIndexForward: false,
+    Limit: limit,
+  };
+
+  if (options.cursor) {
+    const key = decodeCursor(options.cursor);
+    if (key.userId !== userId) throw new Error("Invalid cursor");
+    params.ExclusiveStartKey = { userId: key.userId, date: key.date, id: key.id };
+  }
+
+  const result = await docClient.send(new QueryCommand(params));
+  return {
+    items: (result.Items ?? []).map((item) => toWorkout(item as unknown as WorkoutRecord)),
+    nextCursor: result.LastEvaluatedKey ? encodeCursor(result.LastEvaluatedKey as CursorKey) : null,
+  };
+}
+
+export async function listWorkoutsForDate(userId: string, date: string): Promise<Workout[]> {
   const result = await docClient.send(
     new QueryCommand({
       TableName: WORKOUTS_TABLE,
       IndexName: DATE_INDEX,
-      KeyConditionExpression: "userId = :u",
-      ExpressionAttributeValues: { ":u": userId },
+      KeyConditionExpression: "userId = :u AND begins_with(#d, :d)",
+      ExpressionAttributeNames: { "#d": "date" },
+      ExpressionAttributeValues: { ":u": userId, ":d": date },
       ScanIndexForward: false,
     })
   );
