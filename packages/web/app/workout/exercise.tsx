@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Button, Collapsible, H1, H2, Input, ScrollView, YStack } from "tamagui";
+import { Button, Collapsible, H1, H2, Input, ScrollView, XStack, YStack } from "tamagui";
 import type { LastExercisePerformance } from "@irondog/shared";
 import { SetsTable } from "@/components/SetsTable";
 import { EXERCISES } from "@/data/exercises";
@@ -127,38 +127,39 @@ export default function ExerciseTracker() {
 
   return (
     <ScrollView flex={1} bg="$background">
-      <YStack p="$4" gap="$4">
-        <Button
-          onPress={() => router.back()}
-          bg="$gray4"
-          borderWidth={1}
-          borderColor="$gray6"
-          px="$4"
-          py="$2"
-          rounded="$4"
-          pressStyle={{ opacity: 0.8 }}
-          style={{ alignSelf: "flex-end" }}
-        >
-          <Button.Text color="$gray12" fontSize={14} fontWeight="600">
-            Cancel
-          </Button.Text>
-        </Button>
+      <YStack p="$3" gap="$2.5">
+        <XStack justify="space-between" items="center">
+          <YStack gap="$1">
+            <H1 color="$color" fontSize={20} fontWeight="bold">
+              {exercise.name}
+            </H1>
+            <H2 color="$gray11" fontSize={13}>
+              Set {currentSetNumber}
+            </H2>
+          </YStack>
 
-        <YStack gap="$2">
-          <H1 color="$color" fontSize={24} fontWeight="bold">
-            {exercise.name}
-          </H1>
-          <H2 color="$gray11" fontSize={14}>
-            Set {currentSetNumber}
-          </H2>
-        </YStack>
+          <Button
+            onPress={() => router.back()}
+            bg="$gray4"
+            borderWidth={1}
+            borderColor="$gray6"
+            px="$3"
+            py="$1.5"
+            rounded="$4"
+            pressStyle={{ opacity: 0.8 }}
+          >
+            <Button.Text color="$gray12" fontSize={14} fontWeight="600">
+              Cancel
+            </Button.Text>
+          </Button>
+        </XStack>
 
         {lastPerformance && (
           <Collapsible open={lastPerformanceOpen} onOpenChange={setLastPerformanceOpen}>
             <Collapsible.Trigger asChild>
               <Button
                 bg="$red10"
-                py="$3"
+                py="$2.5"
                 px="$4"
                 rounded="$4"
                 justify="space-between"
@@ -183,90 +184,98 @@ export default function ExerciseTracker() {
           </Collapsible>
         )}
 
-        <YStack gap="$3" bg="$gray4" p="$4" rounded="$4">
-          <YStack gap="$2">
-            <H2 color="$color" fontSize={12} fontWeight="600">
-              WEIGHT (lbs)
-            </H2>
-            <Input
-              bg="$gray5"
-              color="$color"
-              p="$4"
-              rounded="$4"
-              fontSize={24}
-              fontWeight="bold"
-              keyboardType="decimal-pad"
-              placeholder="0"
-              placeholderTextColor="$placeholderColor"
-              value={weight}
-              onChangeText={setWeight}
-            />
-          </YStack>
+        <YStack gap="$2.5" bg="$gray4" p="$3" rounded="$4">
+          <XStack gap="$2">
+            <YStack flex={1} gap="$1.5">
+              <H2 color="$color" fontSize={12} fontWeight="600">
+                WEIGHT (lbs)
+              </H2>
+              <Input
+                bg="$gray5"
+                color="$color"
+                p="$3"
+                rounded="$4"
+                fontSize={20}
+                fontWeight="bold"
+                keyboardType="decimal-pad"
+                placeholder="0"
+                placeholderTextColor="$placeholderColor"
+                value={weight}
+                onChangeText={setWeight}
+              />
+            </YStack>
 
-          <YStack gap="$2">
-            <H2 color="$color" fontSize={12} fontWeight="600">
-              REPS
-            </H2>
-            <Input
-              bg="$gray5"
-              color="$color"
-              p="$4"
-              rounded="$4"
-              fontSize={24}
-              fontWeight="bold"
-              keyboardType="number-pad"
-              placeholder="0"
-              placeholderTextColor="$placeholderColor"
-              value={reps}
-              onChangeText={setReps}
-            />
-          </YStack>
+            <YStack flex={1} gap="$1.5">
+              <H2 color="$color" fontSize={12} fontWeight="600">
+                REPS
+              </H2>
+              <Input
+                bg="$gray5"
+                color="$color"
+                p="$3"
+                rounded="$4"
+                fontSize={20}
+                fontWeight="bold"
+                keyboardType="number-pad"
+                placeholder="0"
+                placeholderTextColor="$placeholderColor"
+                value={reps}
+                onChangeText={setReps}
+              />
+            </YStack>
+          </XStack>
 
           <Button
             onPress={() => setFailure(!failure)}
             bg={failure ? "$red10" : "$gray5"}
             pressStyle={{ opacity: 0.8 }}
+            py="$2.5"
           >
-            <Button.Text color={failure ? "white" : "$gray12"} fontSize={14} fontWeight="600">
+            <Button.Text color={failure ? "white" : "$gray12"} fontSize={13} fontWeight="600">
               {failure ? "FAILURE ✓" : "TAKEN TO FAILURE?"}
             </Button.Text>
           </Button>
         </YStack>
 
-        <Button
-          onPress={handleLogSet}
-          bg="$green10"
-          pressStyle={{ bg: "$green9", opacity: 0.8 }}
-          disabled={!weight || !reps}
-          opacity={!weight || !reps ? 0.5 : 1}
-        >
-          <Button.Text color="white" fontSize={16} fontWeight="bold">
-            LOG SET
-          </Button.Text>
-        </Button>
-
-        <Button
-          onPress={handleStartRest}
-          bg="$gray4"
-          borderWidth={1}
-          borderColor={restRemaining === null || restRemaining === 0 ? "$gray6" : "$red9"}
-          px="$4"
-          py="$3"
-          rounded="$4"
-          pressStyle={{ opacity: 0.8 }}
-        >
-          <Button.Text
-            color={restRemaining === null || restRemaining === 0 ? "$gray12" : "$red10"}
-            fontSize={16}
-            fontWeight="600"
+        <XStack gap="$2">
+          <Button
+            onPress={handleLogSet}
+            bg="$green10"
+            pressStyle={{ bg: "$green9", opacity: 0.8 }}
+            disabled={!weight || !reps}
+            opacity={!weight || !reps ? 0.5 : 1}
+            py="$3"
+            flex={1}
           >
-            {restRemaining === null
-              ? `REST ${formatRestTime(REST_SECONDS)}`
-              : restRemaining === 0
-                ? "REST DONE ✓"
-                : `REST ${formatRestTime(restRemaining)}`}
-          </Button.Text>
-        </Button>
+            <Button.Text color="white" fontSize={16} fontWeight="bold">
+              LOG SET
+            </Button.Text>
+          </Button>
+
+          <Button
+            onPress={handleStartRest}
+            bg="$gray4"
+            borderWidth={1}
+            borderColor={restRemaining === null || restRemaining === 0 ? "$gray6" : "$red9"}
+            px="$4"
+            py="$3"
+            rounded="$4"
+            pressStyle={{ opacity: 0.8 }}
+            flex={1}
+          >
+            <Button.Text
+              color={restRemaining === null || restRemaining === 0 ? "$gray12" : "$red10"}
+              fontSize={15}
+              fontWeight="600"
+            >
+              {restRemaining === null
+                ? `REST ${formatRestTime(REST_SECONDS)}`
+                : restRemaining === 0
+                  ? "REST DONE ✓"
+                  : `REST ${formatRestTime(restRemaining)}`}
+            </Button.Text>
+          </Button>
+        </XStack>
 
         {sets.length > 0 && (
           <YStack gap="$2">
@@ -281,6 +290,7 @@ export default function ExerciseTracker() {
           onPress={handleFinishExercise}
           bg="$red10"
           pressStyle={{ bg: "$red9", opacity: 0.8 }}
+          py="$3"
         >
           <Button.Text color="white" fontSize={16} fontWeight="bold">
             FINISH EXERCISE

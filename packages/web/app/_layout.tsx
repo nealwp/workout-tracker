@@ -23,7 +23,7 @@ function TopBar() {
   return (
     <XStack
       bg="$gray4"
-      py="$2"
+      py="$1"
       px="$4"
       justify="space-between"
       items="center"
@@ -125,7 +125,7 @@ function BottomBar() {
   return (
     <XStack
       bg="$gray4"
-      py="$3"
+      py="$1.5"
       px="$4"
       items="center"
       borderTopWidth={1}
@@ -136,7 +136,7 @@ function BottomBar() {
           <YStack items="center" gap="$1">
             <Ionicons
               name="list"
-              size={32}
+              size={28}
               color={location === "/history" ? "#ff4444" : "#999"}
             />
             <Text
@@ -153,7 +153,7 @@ function BottomBar() {
       <Pressable onPress={() => router.push("/")}>
         <Image
           source={require("../assets/images/irondog-logo-no-text.png")}
-          style={{ width: 48, height: 48, borderRadius: 24 }}
+          style={{ width: 40, height: 40, borderRadius: 20 }}
         />
       </Pressable>
       <XStack flex={1} />

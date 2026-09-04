@@ -36,7 +36,7 @@ export function DataTable<T>({
 
     const row = (
       <XStack
-        py="$2"
+        py="$1.5"
         px="$4"
         items="center"
         borderBottomWidth={1}
@@ -74,7 +74,7 @@ export function DataTable<T>({
 
   return (
     <YStack bg="$gray4" rounded="$4" overflow="hidden">
-      <XStack py="$2" px="$4" borderBottomWidth={1} borderBottomColor="$gray6">
+      <XStack py="$1.5" px="$4" borderBottomWidth={1} borderBottomColor="$gray6">
         {columns.map((column) => (
           <H2 key={column.key} color="$gray11" fontSize={11} fontWeight="600" flex={column.flex}>
             {column.label}

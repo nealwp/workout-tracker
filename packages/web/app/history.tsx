@@ -122,7 +122,7 @@ export default function History() {
       </XStack>
       {workout.exercises.map((exercise) => (
         <YStack key={exercise.id}>
-          <H2 color="$gray12" fontSize={14} fontWeight="700" px="$4" pt="$2" pb="$1">
+          <H2 color="$gray12" fontSize={14} fontWeight="700" px="$4" pt="$1.5" pb="$1">
             {exercise.name}
           </H2>
           {exercise.sets.map((set) => (
@@ -135,14 +135,14 @@ export default function History() {
 
   return (
     <ScrollView flex={1} bg="$background" onScroll={onScroll} scrollEventThrottle={16}>
-      <YStack p="$4" gap="$4">
+      <YStack p="$3" gap="$3">
         <Button
           onPress={() => router.back()}
           bg="$gray4"
           borderWidth={1}
           borderColor="$gray6"
-          px="$4"
-          py="$2"
+          px="$3"
+          py="$1.5"
           rounded="$4"
           pressStyle={{ opacity: 0.8 }}
           style={{ alignSelf: "flex-start" }}
@@ -155,7 +155,7 @@ export default function History() {
           </XStack>
         </Button>
 
-        <H1 color="$color" fontSize={24} fontWeight="bold">
+        <H1 color="$color" fontSize={22} fontWeight="bold">
           Workout History
         </H1>
 
@@ -180,7 +180,7 @@ export default function History() {
               renderExpanded={renderExpanded}
             />
             {loadingMore && (
-              <Paragraph color="$gray11" fontSize={14} alignSelf="center">
+              <Paragraph color="$gray11" fontSize={14} style={{ alignSelf: "center" }}>
                 Loading...
               </Paragraph>
             )}
