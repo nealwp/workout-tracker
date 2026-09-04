@@ -2,6 +2,7 @@ import {
   createWorkout,
   addExerciseToWorkout,
   getLastExercisePerformance,
+  listWorkouts,
   signInWithGoogle,
   fetchMe,
   signOutServer,
@@ -196,6 +197,38 @@ describe("API Client", () => {
       await expect(getLastExercisePerformance("flat-bench-press")).rejects.toThrow(
         "Network error"
       );
+    });
+  });
+
+  describe("listWorkouts", () => {
+    it("sends GET request to /workouts with auth header", async () => {
+      const mockWorkouts = [
+        {
+          id: "w1",
+          userId: "u1",
+          date: "2026-08-21",
+          exercises: [{ id: "flat-bench-press", name: "Flat Bench Press", muscleGroup: "chest", sets: [] }],
+        },
+      ];
+      mockFetch.mockResolvedValue({ json: () => Promise.resolve(mockWorkouts) });
+
+      const result = await listWorkouts();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "http://localhost:3001/workouts",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer mock-access-token",
+          }),
+        })
+      );
+      expect(result).toEqual(mockWorkouts);
+    });
+
+    it("propagates fetch errors", async () => {
+      mockFetch.mockRejectedValue(new Error("Network error"));
+
+      await expect(listWorkouts()).rejects.toThrow("Network error");
     });
   });
 

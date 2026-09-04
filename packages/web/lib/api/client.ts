@@ -96,6 +96,11 @@ export async function createWorkout() {
   return res.json();
 }
 
+export async function listWorkouts(): Promise<Workout[]> {
+  const res = await authFetch("/workouts");
+  return res.json();
+}
+
 export async function getTodayWorkout(): Promise<Workout | null> {
   const date = new Date().toLocaleDateString("en-CA");
   const res = await authFetch(`/workouts/today?date=${date}`);

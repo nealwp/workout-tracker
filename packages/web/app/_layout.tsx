@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ActivityIndicator, Image, Platform, Pressable, useColorScheme } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack, useRouter } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { Button, Paragraph, TamaguiProvider, XStack, YStack, AnimatePresence } from "tamagui";
+import { Ionicons } from "@expo/vector-icons";
 import { tamaguiConfig, DARK_BACKGROUND } from "../tamagui.config";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
@@ -14,6 +15,7 @@ if (Platform.OS !== "web") {
 
 function TopBar() {
   const { user, signOut } = useAuth();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const [open, setOpen] = useState(false);
 
@@ -82,7 +84,7 @@ function TopBar() {
               >
                 {user.name}
               </Paragraph>
-              {["History", "Stats", "Settings"].map((label) => (
+              {(["Stats", "Settings"] as const).map((label) => (
                 <Button
                   key={label}
                   chromeless
@@ -96,6 +98,17 @@ function TopBar() {
                   </Button.Text>
                 </Button>
               ))}
+              <Button
+                chromeless
+                onPress={() => { setOpen(false); router.push("/history"); }}
+                px="$4"
+                py="$3"
+                style={{ justifyContent: "flex-start" }}
+              >
+                <Button.Text color="$gray12" fontSize={14}>
+                  History
+                </Button.Text>
+              </Button>
               <Button
                 chromeless
                 onPress={() => { setOpen(false); signOut(); }}
@@ -119,6 +132,7 @@ function TopBar() {
 
 function BottomBar() {
   const router = useRouter();
+  const location = usePathname();
 
   return (
     <XStack
@@ -127,6 +141,7 @@ function BottomBar() {
       px="$4"
       justify="center"
       items="center"
+      gap="$12"
       borderTopWidth={1}
       borderTopColor="$gray7"
     >
@@ -134,6 +149,13 @@ function BottomBar() {
         <Image
           source={require("../assets/images/irondog-logo-no-text.png")}
           style={{ width: 48, height: 48, borderRadius: 24 }}
+        />
+      </Pressable>
+      <Pressable onPress={() => router.push("/history")}>
+        <Ionicons
+          name="list"
+          size={40}
+          color={location === "/history" ? "#ff4444" : "#999"}
         />
       </Pressable>
     </XStack>
