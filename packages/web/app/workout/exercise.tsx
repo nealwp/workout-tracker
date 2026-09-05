@@ -16,6 +16,7 @@ interface Set {
 }
 
 const REST_SECONDS = 60;
+const ADD_REST_SECONDS = 30;
 
 const formatRestTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -34,17 +35,41 @@ export default function ExerciseTracker() {
   const [weight, setWeight] = useState("");
   const [reps, setReps] = useState("");
   const [failure, setFailure] = useState(false);
-  const [restRemaining, setRestRemaining] = useState<number | null>(null);
+  const [restEndTime, setRestEndTime] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const [lastPerformance, setLastPerformance] = useState<LastExercisePerformance | null>(null);
   const [lastPerformanceOpen, setLastPerformanceOpen] = useState(false);
 
+  const restRemaining =
+    restEndTime === null ? null : Math.max(0, Math.ceil((restEndTime - now) / 1000));
+
   useEffect(() => {
-    if (restRemaining === null || restRemaining <= 0) return;
-    const id = setTimeout(() => {
-      setRestRemaining((prev) => (prev === null ? prev : Math.max(0, prev - 1)));
-    }, 1000);
-    return () => clearTimeout(id);
-  }, [restRemaining]);
+    if (restEndTime === null) return;
+    const id = setInterval(() => {
+      setNow(Date.now());
+      if (restEndTime - Date.now() <= 0) clearInterval(id);
+    }, 250);
+    return () => clearInterval(id);
+  }, [restEndTime]);
+
+  useEffect(() => {
+    const hasWindowListeners = typeof window !== "undefined" && typeof window.addEventListener === "function";
+    const hasDocumentListeners = typeof document !== "undefined" && typeof document.addEventListener === "function";
+    if (!hasWindowListeners) return;
+    const refresh = () => setNow(Date.now());
+    window.addEventListener("focus", refresh);
+    window.addEventListener("pageshow", refresh);
+    if (hasDocumentListeners) {
+      document.addEventListener("visibilitychange", refresh);
+    }
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("pageshow", refresh);
+      if (hasDocumentListeners) {
+        document.removeEventListener("visibilitychange", refresh);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!exerciseId) return;
@@ -64,7 +89,13 @@ export default function ExerciseTracker() {
   }, [exerciseId]);
 
   const handleStartRest = () => {
-    setRestRemaining(REST_SECONDS);
+    const nowMs = Date.now();
+    setNow(nowMs);
+    if (restEndTime === null || restRemaining === 0) {
+      setRestEndTime(nowMs + REST_SECONDS * 1000);
+    } else {
+      setRestEndTime(restEndTime + ADD_REST_SECONDS * 1000);
+    }
   };
 
   const currentSetNumber = sets.length + 1;

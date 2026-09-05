@@ -208,7 +208,7 @@ describe("ExerciseTracker Screen", () => {
     expect(screen.getByText("REST 0:59")).toBeTruthy();
   });
 
-  it("restarts the rest timer when pressed again", async () => {
+  it("adds 30 seconds when the rest timer is pressed while running", async () => {
     jest.useFakeTimers();
     render(<ExerciseTracker />, { wrapper: TestWrapper });
     await act(async () => {});
@@ -220,14 +220,60 @@ describe("ExerciseTracker Screen", () => {
     });
     expect(screen.getByText("REST 0:59")).toBeTruthy();
 
+    fireEvent.press(screen.getByText("REST 0:59"));
+    expect(screen.getByText("REST 1:29")).toBeTruthy();
+
     for (let i = 0; i < 4; i++) {
       act(() => {
         jest.advanceTimersByTime(1000);
       });
     }
-    expect(screen.getByText("REST 0:55")).toBeTruthy();
+    expect(screen.getByText("REST 1:25")).toBeTruthy();
+  });
 
-    fireEvent.press(screen.getByText("REST 0:55"));
+  it("reaches REST DONE when the rest completes", async () => {
+    jest.useFakeTimers();
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
+
+    fireEvent.press(screen.getByText("REST 1:00"));
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+
+    expect(screen.getByText("REST DONE ✓")).toBeTruthy();
+  });
+
+  it("shows REST DONE if completed while the timer was backgrounded", async () => {
+    jest.useFakeTimers();
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
+
+    fireEvent.press(screen.getByText("REST 1:00"));
+
+    jest.setSystemTime(Date.now() + 65000);
+
+    act(() => {
+      jest.advanceTimersByTime(250);
+    });
+
+    expect(screen.getByText("REST DONE ✓")).toBeTruthy();
+  });
+
+  it("resets the rest timer when pressed after REST DONE", async () => {
+    jest.useFakeTimers();
+    render(<ExerciseTracker />, { wrapper: TestWrapper });
+    await act(async () => {});
+
+    fireEvent.press(screen.getByText("REST 1:00"));
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+    expect(screen.getByText("REST DONE ✓")).toBeTruthy();
+
+    fireEvent.press(screen.getByText("REST DONE ✓"));
     expect(screen.getByText("REST 1:00")).toBeTruthy();
   });
 
