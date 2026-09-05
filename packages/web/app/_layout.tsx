@@ -133,11 +133,12 @@ function BottomBar() {
     >
       <XStack flex={1} justify="center">
         <Pressable onPress={() => router.push("/history")}>
-          <YStack items="center" gap="$1">
+          <YStack items="center" gap="$0.5">
             <Ionicons
               name="list"
               size={28}
               color={location === "/history" ? "#ff4444" : "#999"}
+              style={{ marginBottom: -3 }}
             />
             <Text
               fontSize={10}
